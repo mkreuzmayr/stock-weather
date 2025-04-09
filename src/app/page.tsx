@@ -1,103 +1,310 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState, useEffect } from "react"
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs"
+import { Menu } from "lucide-react"
+import { StockDisplay } from "~/components/stock-display"
+import { StockInfo } from "~/components/stock-info"
+import { StockRecommendations } from "~/components/stock-recommendations"
+import { NewsSection } from "~/components/news-section"
+import { StockForecast } from "~/components/stock-forecast"
+import { ThemeToggle } from "~/components/theme-toggle"
+import { useMobile } from "~/hooks/use-mobile"
+import { EnhancedStockChart } from "~/components/enhanced-stock-chart"
+
+export default function StockOverview() {
+  const [mounted, setMounted] = useState(false)
+  const isMobile = useMobile()
+  const [selectedTimeframe, setSelectedTimeframe] = useState("1D")
+
+  const [stockData, setStockData] = useState({
+    price: 182.63,
+    change: 1.25,
+    changePercent: 0.69,
+    sentiment: "positive", // positive, neutral, negative, very-negative
+  })
+
+  const stockInfo = {
+    country: "US",
+    currency: "USD",
+    exchange: "NASDAQ/NMS (GLOBAL MARKET)",
+    ipo: "1980-12-12",
+    marketCapitalization: 1415993,
+    name: "Apple Inc",
+    phone: "14089961010",
+    shareOutstanding: 4375.47998046875,
+    ticker: "AAPL",
+    weburl: "https://www.apple.com/",
+    logo: "https://static.finnhub.io/logo/87cb30d8-80df-11ea-8951-00000000092a.png",
+    finnhubIndustry: "Technology",
+  }
+
+  // Simulate price changes with more varied sentiment changes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomFactor = Math.random()
+      let change, sentiment
+
+      // Create more varied price movements
+      if (randomFactor < 0.3) {
+        // Strong positive movement
+        change = Math.random() * 0.5 + 0.2
+        sentiment = "positive"
+      } else if (randomFactor < 0.6) {
+        // Neutral/slight positive movement
+        change = Math.random() * 0.3 - 0.1
+        sentiment = change >= 0 ? "neutral" : "negative"
+      } else if (randomFactor < 0.9) {
+        // Negative movement
+        change = Math.random() * -0.3 - 0.1
+        sentiment = "negative"
+      } else {
+        // Strong negative movement
+        change = Math.random() * -0.6 - 0.3
+        sentiment = "very-negative"
+      }
+
+      const newPrice = Number.parseFloat((stockData.price + change).toFixed(2))
+
+      setStockData({
+        price: newPrice,
+        change: Number.parseFloat(change.toFixed(2)),
+        changePercent: Number.parseFloat(((change / stockData.price) * 100).toFixed(2)),
+        sentiment,
+      })
+    }, 8000) // Longer interval for better visualization
+
+    return () => clearInterval(interval)
+  }, [stockData.price])
+
+  // Ensure hydration is complete before rendering theme-dependent components
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+
+  // Get weather condition text based on sentiment
+  const getWeatherCondition = () => {
+    switch (stockData.sentiment) {
+      case "positive":
+        return "Sunny"
+      case "neutral":
+        return "Partly Cloudy"
+      case "negative":
+        return "Rainy"
+      case "very-negative":
+        return "Thunderstorm"
+      default:
+        return "Partly Cloudy"
+    }
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen transition-colors duration-300 bg-gray-50 dark:bg-gray-950">
+      <div className={`container mx-auto px-4 py-6 ${isMobile ? "max-w-md" : "max-w-7xl"}`}>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-black dark:bg-white flex items-center justify-center">
+              <div className="w-5 h-5 rounded-full bg-white dark:bg-black"></div>
+            </div>
+            <span className="font-mono text-sm text-gray-600 dark:text-gray-400">(Not Boring) Stocks</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800">
+              <Menu className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            </button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {isMobile ? (
+          // Mobile Layout (Single Column)
+          <>
+            {/* Location/Ticker */}
+            <div className="text-center mb-4">
+              <h1 className="text-lg tracking-widest font-medium text-gray-800 dark:text-gray-200">
+                {stockInfo.ticker}
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{getWeatherCondition()}</p>
+            </div>
+
+            {/* Main Stock Display */}
+            <StockDisplay
+              price={stockData.price}
+              change={stockData.change}
+              changePercent={stockData.changePercent}
+              sentiment={stockData.sentiment}
+            />
+
+            {/* Time Period Tabs */}
+            <div className="mb-6">
+              <Tabs defaultValue="1D" className="w-full" onValueChange={(value) => setSelectedTimeframe(value)}>
+                <TabsList className="grid grid-cols-5 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
+                  <TabsTrigger
+                    value="1D"
+                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                  >
+                    1D
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="1W"
+                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                  >
+                    1W
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="1M"
+                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                  >
+                    1M
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="3M"
+                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                  >
+                    3M
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="1Y"
+                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                  >
+                    1Y
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              {/* Enhanced Chart for Mobile */}
+              <div className="mt-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+                <EnhancedStockChart sentiment={stockData.sentiment} timeframe={selectedTimeframe} />
+              </div>
+            </div>
+
+            {/* Stock Forecast */}
+            <StockForecast />
+
+            {/* Stock Info Card */}
+            <div className="mt-8">
+              <StockInfo stockInfo={stockInfo} />
+            </div>
+
+            {/* Stock Recommendations */}
+            <div className="mt-8">
+              <StockRecommendations industry={stockInfo.finnhubIndustry} />
+            </div>
+
+            {/* News Section */}
+            <div className="mt-8">
+              <NewsSection ticker={stockInfo.ticker} />
+            </div>
+          </>
+        ) : (
+          // Desktop Layout (Multi-Column)
+          <>
+            <div className="grid grid-cols-12 gap-6">
+              {/* Left Column - Main Stock Display */}
+              <div className="col-span-12 lg:col-span-5 xl:col-span-4">
+                <div className="sticky top-6">
+                  <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg mb-6">
+                    {/* Location/Ticker */}
+                    <div className="text-center mb-4">
+                      <h1 className="text-xl tracking-widest font-medium text-gray-800 dark:text-gray-200">
+                        {stockInfo.ticker}
+                      </h1>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{getWeatherCondition()}</p>
+                    </div>
+
+                    {/* Main Stock Display */}
+                    <StockDisplay
+                      price={stockData.price}
+                      change={stockData.change}
+                      changePercent={stockData.changePercent}
+                      sentiment={stockData.sentiment}
+                    />
+                  </div>
+
+                  {/* Stock Info Card */}
+                  <div className="mb-6">
+                    <StockInfo stockInfo={stockInfo} />
+                  </div>
+
+                  {/* Stock Forecast */}
+                  <div>
+                    <StockForecast />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column - Charts, Recommendations, News */}
+              <div className="col-span-12 lg:col-span-7 xl:col-span-8">
+                {/* Time Period Tabs */}
+                <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg mb-6">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Price Chart</h2>
+                  <Tabs defaultValue="1D" className="w-full" onValueChange={(value) => setSelectedTimeframe(value)}>
+                    <TabsList className="grid grid-cols-5 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl mb-4">
+                      <TabsTrigger
+                        value="1D"
+                        className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                      >
+                        1D
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="1W"
+                        className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                      >
+                        1W
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="1M"
+                        className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                      >
+                        1M
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="3M"
+                        className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                      >
+                        3M
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="1Y"
+                        className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                      >
+                        1Y
+                      </TabsTrigger>
+                    </TabsList>
+
+                    {/* Enhanced Chart for Desktop */}
+                    <EnhancedStockChart sentiment={stockData.sentiment} timeframe={selectedTimeframe} />
+                  </Tabs>
+                </div>
+
+                {/* Two Column Layout for Recommendations and News */}
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                  {/* Stock Recommendations */}
+                  <div>
+                    <StockRecommendations industry={stockInfo.finnhubIndustry} />
+                  </div>
+
+                  {/* News Section */}
+                  <div>
+                    <NewsSection ticker={stockInfo.ticker} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Footer */}
+        <div className="mt-12 pt-4 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center">
+          <span className="text-xs text-gray-500 dark:text-gray-400">Data from Finnhub</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">Updated just now</span>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
