@@ -732,7 +732,7 @@ export function StockDisplay({ price, change, changePercent, sentiment }: StockD
       <div className="relative z-10 text-center">
         <div className="inline-block">
           <div
-            className={`${isMobile ? "text-[120px]" : "text-[150px]"} font-bold leading-none tracking-tighter text-gray-900 dark:text-gray-100 drop-shadow-lg`}
+            className={`${isMobile ? "text-[120px]" : "text-[100px]"} font-bold leading-none tracking-tighter text-gray-900 dark:text-gray-100 drop-shadow-lg`}
           >
             {price.toFixed(2)}
           </div>

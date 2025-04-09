@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { formatLargeNumber } from "~/lib/utils"
 import { Building2, Calendar, Globe } from "lucide-react"
+import Image from "next/image"
 
 interface StockInfoProps {
   stockInfo: {
