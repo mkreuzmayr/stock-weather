@@ -101,7 +101,7 @@ async function fetchStockPrice(ticker: string): Promise<StockPrice> {
   };
 }
 
-type Sentiment = 'positive' | 'negative' | 'neutral';
+type Sentiment = 'positive' | 'neutral' | 'negative' | 'very-negative';
 
 async function calculateSentiment(stockPrice: StockPrice): Promise<Sentiment> {
   const { price, changePercent } = stockPrice;
@@ -109,6 +109,8 @@ async function calculateSentiment(stockPrice: StockPrice): Promise<Sentiment> {
   switch (true) {
     case price > 0 && changePercent > 0:
       return 'positive';
+    case price > 0 && changePercent < -10:
+      return 'very-negative';
     case price > 0 && changePercent < 0:
       return 'negative';
     default:
