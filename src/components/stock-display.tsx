@@ -36,6 +36,7 @@ type RayParticle = ParticleBase & {
   speed: number;
   color: string;
   alpha: number;
+  sunRadius: number;
 };
 
 type CloudParticle = ParticleBase & {
@@ -155,43 +156,43 @@ export function StockDisplay(props: {
 
       switch (props.sentiment) {
         case 'positive': // Sunny - bright sun with rays, no clouds
-          // Create sun
-          const sunRadius = Math.min(canvas.width, canvas.height) * 0.25;
-          particles.push({
-            type: 'sun',
-            x: centerX,
-            y: centerY,
-            radius: sunRadius,
-            color: isDark ? '#10b981' : '#f43f5e', // Green in dark mode, Red in light mode
-            shadowColor: isDark
-              ? 'rgba(16, 185, 129, 0.3)'
-              : 'rgba(244, 63, 94, 0.3)',
-            shadowBlur: 30,
-            shadowOffsetX: 0,
-            shadowOffsetY: 0,
-            texture: true,
-            pulseSpeed: 0.002,
-            pulseAmount: 0.05,
-            pulseValue: 0,
-          });
-
-          // Create sun rays
+          // Create sun rays (FIRST, so they appear behind the sun)
           for (let i = 0; i < 12; i++) {
             const angle = ((Math.PI * 2) / 12) * i;
-            const length = sunRadius * 0.8;
+            const rayStartRadius = Math.min(canvas.width, canvas.height) * 0.2; // Same as sun radius
+            const rayLength = rayStartRadius * 1.5; // Much longer rays
 
             particles.push({
               type: 'ray',
               x: centerX,
-              y: centerY,
+              y: centerY - (canvas.height * 0.15), // Match sun position
               angle: angle,
-              length: length,
-              width: 3 + Math.random() * 2,
-              speed: 0.0005,
-              color: isDark ? '#10b981' : '#f43f5e',
-              alpha: 0.7 + Math.random() * 0.3,
+              sunRadius: rayStartRadius, // Store sun radius for drawing from edge
+              length: rayLength,
+              width: 6, // Thicker rays
+              speed: 0.0004,
+              color: '#FFA500', // Slightly deeper orange for contrast
+              alpha: 0.8,
             });
           }
+
+          // Create sun
+          const sunRadius = Math.min(canvas.width, canvas.height) * 0.2;
+          particles.push({
+            type: 'sun',
+            x: centerX,
+            y: centerY - (canvas.height * 0.15), // Higher position
+            radius: sunRadius,
+            color: '#FFD700', // Standard gold/yellow color
+            shadowColor: 'rgba(255, 215, 0, 0.6)',
+            shadowBlur: 30,
+            shadowOffsetX: 0,
+            shadowOffsetY: 0,
+            texture: true,
+            pulseSpeed: 0.001,
+            pulseAmount: 0.03,
+            pulseValue: 0,
+          });
 
           // Add small sparkles around the sun
           for (let i = 0; i < 20; i++) {
@@ -212,43 +213,43 @@ export function StockDisplay(props: {
           break;
 
         case 'neutral': // Neutral - sun partially obscured by clouds
+          // Create partial sun rays FIRST (only on visible side)
+          for (let i = 0; i < 6; i++) {
+            const angle = ((Math.PI * 1.5) / 6) * i - Math.PI / 4; // Only on left side
+            const rayStartRadius = Math.min(canvas.width, canvas.height) * 0.18; // Same as sun radius
+            const rayLength = rayStartRadius * 1.5;
+
+            particles.push({
+              type: 'ray',
+              x: centerX - rayStartRadius * 0.5,
+              y: centerY - (canvas.height * 0.1), // Match sun position
+              angle: angle,
+              sunRadius: rayStartRadius, // Store sun radius for drawing from edge
+              length: rayLength,
+              width: 5,
+              speed: 0.0004,
+              color: '#FFA500', // Slightly deeper orange for contrast
+              alpha: 0.8,
+            });
+          }
+
           // Create sun (slightly smaller)
-          const neutralSunRadius = Math.min(canvas.width, canvas.height) * 0.22;
+          const neutralSunRadius = Math.min(canvas.width, canvas.height) * 0.18;
           particles.push({
             type: 'sun',
             x: centerX - neutralSunRadius * 0.5, // Offset to left to make room for clouds
-            y: centerY,
+            y: centerY - (canvas.height * 0.1), // Higher position
             radius: neutralSunRadius,
-            color: isDark ? '#60a5fa' : '#f97316', // Blue in dark mode, Orange in light mode
-            shadowColor: isDark
-              ? 'rgba(96, 165, 250, 0.3)'
-              : 'rgba(249, 115, 22, 0.3)',
+            color: '#FFD700', // Standard gold/yellow color
+            shadowColor: 'rgba(255, 215, 0, 0.5)',
             shadowBlur: 25,
             shadowOffsetX: 0,
             shadowOffsetY: 0,
             texture: true,
-            pulseSpeed: 0.002,
-            pulseAmount: 0.05,
+            pulseSpeed: 0.001,
+            pulseAmount: 0.03,
             pulseValue: 0,
           });
-
-          // Create partial sun rays (only on visible side)
-          for (let i = 0; i < 6; i++) {
-            const angle = ((Math.PI * 1.5) / 6) * i - Math.PI / 4; // Only on left side
-            const length = neutralSunRadius * 0.7;
-
-            particles.push({
-              type: 'ray',
-              x: centerX - neutralSunRadius * 0.5,
-              y: centerY,
-              angle: angle,
-              length: length,
-              width: 2 + Math.random() * 2,
-              speed: 0.0005,
-              color: isDark ? '#60a5fa' : '#f97316',
-              alpha: 0.6 + Math.random() * 0.3,
-            });
-          }
 
           // Create varied clouds that partially obscure the sun
           const cloudCount = 5;
@@ -304,24 +305,22 @@ export function StockDisplay(props: {
 
         case 'negative': // Bad - rain with subtle sun and clouds
           // Create subtle sun (smaller and less bright)
-          const rainySunRadius = Math.min(canvas.width, canvas.height) * 0.18;
+          const rainySunRadius = Math.min(canvas.width, canvas.height) * 0.15;
           particles.push({
             type: 'sun',
             x: centerX - rainySunRadius,
-            y: centerY - rainySunRadius * 0.5,
+            y: centerY - rainySunRadius * 0.5 - (canvas.height * 0.1), // Higher position
             radius: rainySunRadius,
-            color: isDark ? '#8b5cf6' : '#6366f1', // Purple in dark mode, Indigo in light mode
-            shadowColor: isDark
-              ? 'rgba(139, 92, 246, 0.2)'
-              : 'rgba(99, 102, 241, 0.2)',
-            shadowBlur: 20,
+            color: '#FFD700', // Standard gold/yellow color
+            shadowColor: 'rgba(255, 215, 0, 0.3)',
+            shadowBlur: 15,
             shadowOffsetX: 0,
             shadowOffsetY: 0,
             texture: true,
             pulseSpeed: 0.001,
-            pulseAmount: 0.03,
+            pulseAmount: 0.02,
             pulseValue: 0,
-            opacity: 0.7, // Less visible
+            opacity: 0.6, // Less visible
           });
 
           // Create more clouds (rain clouds)
@@ -464,8 +463,8 @@ export function StockDisplay(props: {
       // Sort particles by type for proper layering
       particles.sort((a, b) => {
         const typeOrder = {
-          sun: 1,
-          ray: 2,
+          ray: 1,
+          sun: 2,
           sparkle: 3,
           cloud: 4,
           rain: 5,
@@ -498,7 +497,7 @@ export function StockDisplay(props: {
               const pulseFactor = 1 + Math.sin(p.pulseValue) * p.pulseAmount;
               const currentRadius = Math.max(0.1, p.radius * pulseFactor);
 
-              // Create sun gradient
+              // Draw sun with simple gradient
               const sunGradient = ctx.createRadialGradient(
                 p.x,
                 p.y,
@@ -508,31 +507,11 @@ export function StockDisplay(props: {
                 currentRadius
               );
 
-              // Determine colors based on theme and sentiment
-              const isDark = theme === 'dark';
-              let centerColor, midColor, edgeColor;
-
-              if (props.sentiment === 'positive') {
-                centerColor = isDark ? '#ecfdf5' : '#fff5f5'; // Green/Red tint white
-                midColor = isDark ? '#34d399' : '#fda4af'; // Light green/pink
-                edgeColor = p.color; // Main color
-              } else if (props.sentiment === 'neutral') {
-                centerColor = isDark ? '#eff6ff' : '#fff7ed'; // Blue/Orange tint white
-                midColor = isDark ? '#93c5fd' : '#fdba74'; // Light blue/orange
-                edgeColor = p.color; // Main color
-              } else if (props.sentiment === 'negative') {
-                centerColor = isDark ? '#f5f3ff' : '#eef2ff'; // Purple/Indigo tint white
-                midColor = isDark ? '#c4b5fd' : '#a5b4fc'; // Light purple/indigo
-                edgeColor = p.color; // Main color
-              } else {
-                centerColor = isDark ? '#fce7f3' : '#fdf2f8'; // Pink tint white
-                midColor = isDark ? '#f9a8d4' : '#f9a8d4'; // Light pink
-                edgeColor = p.color; // Main color
-              }
-
-              sunGradient.addColorStop(0, centerColor);
-              sunGradient.addColorStop(0.4, midColor);
-              sunGradient.addColorStop(1, edgeColor);
+              // Yellow sun gradient
+              sunGradient.addColorStop(0, '#FFFFFF');
+              sunGradient.addColorStop(0.3, '#FFF8B6');
+              sunGradient.addColorStop(0.7, '#FFE066');
+              sunGradient.addColorStop(1, p.color);
 
               // Draw sun circle with opacity
               ctx.globalAlpha = p.opacity !== undefined ? p.opacity : 1;
@@ -541,7 +520,7 @@ export function StockDisplay(props: {
               ctx.fillStyle = sunGradient;
               ctx.fill();
 
-              // Add texture if needed
+              // Add simple texture
               if (p.texture) {
                 const textureGradient = ctx.createRadialGradient(
                   p.x - currentRadius * 0.3,
@@ -551,7 +530,8 @@ export function StockDisplay(props: {
                   p.y,
                   currentRadius
                 );
-                textureGradient.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+                textureGradient.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
+                textureGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
                 textureGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
                 ctx.beginPath();
@@ -565,37 +545,38 @@ export function StockDisplay(props: {
             break;
 
           case 'ray':
-            // Draw sun ray with animation
+            // Draw sun ray with simple straight lines, starting from the edge of the sun
             ctx.save();
 
             // Animate ray rotation
             p.angle += p.speed || 0.001;
-            const rayEndX = p.x + Math.cos(p.angle) * p.length;
-            const rayEndY = p.y + Math.sin(p.angle) * p.length;
 
-            // Create gradient for ray
+            // Start ray at sun's edge rather than center
+            const sunEdgeX = p.x + Math.cos(p.angle) * (p.sunRadius || 0);
+            const sunEdgeY = p.y + Math.sin(p.angle) * (p.sunRadius || 0);
+
+            // End point of ray
+            const rayEndX = p.x + Math.cos(p.angle) * ((p.sunRadius || 0) + p.length);
+            const rayEndY = p.y + Math.sin(p.angle) * ((p.sunRadius || 0) + p.length);
+
+            // Draw ray with linear gradient
             const rayGradient = ctx.createLinearGradient(
-              p.x,
-              p.y,
+              sunEdgeX,
+              sunEdgeY,
               rayEndX,
               rayEndY
             );
+
             rayGradient.addColorStop(0, p.color);
-            rayGradient.addColorStop(
-              1,
-              `rgba(${p.color
-                .slice(1)
-                .match(/../g)
-                ?.map((hex: string) => Number.parseInt(hex, 16))
-                .join(', ')}, 0)`
-            );
+            rayGradient.addColorStop(1, 'rgba(255, 165, 0, 0)');
 
             ctx.globalAlpha = p.alpha || 0.7;
             ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
+            ctx.moveTo(sunEdgeX, sunEdgeY);
             ctx.lineTo(rayEndX, rayEndY);
             ctx.strokeStyle = rayGradient;
             ctx.lineWidth = p.width || 2;
+            ctx.lineCap = 'round';
             ctx.stroke();
 
             ctx.restore();
