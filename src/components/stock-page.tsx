@@ -2,84 +2,91 @@
 
 import { useState, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
-import { Menu } from 'lucide-react';
 import { StockDisplay } from '~/components/stock-display';
 import { StockInfo } from '~/components/stock-info';
 import { StockRecommendations } from '~/components/stock-recommendations';
 import { NewsSection } from '~/components/news-section';
 import { StockForecast } from '~/components/stock-forecast';
 import { ThemeToggle } from '~/components/theme-toggle';
-import { useTheme } from 'next-themes';
 import { useMobile } from '~/hooks/use-mobile';
 import { EnhancedStockChart } from '~/components/enhanced-stock-chart';
-import Image from 'next/image';
-export default function StockOverview() {
+import { CommandPalette } from '~/components/command-palette';
+import { cn } from '~/lib/utils';
+
+export function StockPage(props: {
+  stockInfo: {
+    country: string;
+    currency: string;
+    exchange: string;
+    ipo: string;
+    marketCapitalization: number;
+    name: string;
+    phone: string;
+    shareOutstanding: number;
+    ticker: string;
+    weburl: string;
+    logo: string;
+    finnhubIndustry: string;
+  };
+  stockPrice: {
+    symbol: string;
+    open: number;
+    high: number;
+    low: number;
+    price: number;
+    volume: number;
+    latestTradingDay: string;
+    previousClose: number;
+    change: number;
+    changePercent: number;
+  };
+  sentiment: string;
+}) {
   const [mounted, setMounted] = useState(false);
-  const { theme } = useTheme();
   const isMobile = useMobile();
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
 
-  const [stockData, setStockData] = useState({
-    price: 182.63,
-    change: 1.25,
-    changePercent: 0.69,
-    sentiment: 'positive', // positive, neutral, negative, very-negative
-  });
-
-  const stockInfo = {
-    country: 'US',
-    currency: 'USD',
-    exchange: 'NASDAQ/NMS (GLOBAL MARKET)',
-    ipo: '1980-12-12',
-    marketCapitalization: 1415993,
-    name: 'Apple Inc',
-    phone: '14089961010',
-    shareOutstanding: 4375.47998046875,
-    ticker: 'AAPL',
-    weburl: 'https://www.apple.com/',
-    logo: 'https://static.finnhub.io/logo/87cb30d8-80df-11ea-8951-00000000092a.png',
-    finnhubIndustry: 'Technology',
-  };
-
   // Simulate price changes with more varied sentiment changes
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const randomFactor = Math.random();
-      let change, sentiment;
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const randomFactor = Math.random();
+  //     let change, sentiment;
 
-      // Create more varied price movements
-      if (randomFactor < 0.3) {
-        // Strong positive movement
-        change = Math.random() * 0.5 + 0.2;
-        sentiment = 'positive';
-      } else if (randomFactor < 0.6) {
-        // Neutral/slight positive movement
-        change = Math.random() * 0.3 - 0.1;
-        sentiment = change >= 0 ? 'neutral' : 'negative';
-      } else if (randomFactor < 0.9) {
-        // Negative movement
-        change = Math.random() * -0.3 - 0.1;
-        sentiment = 'negative';
-      } else {
-        // Strong negative movement
-        change = Math.random() * -0.6 - 0.3;
-        sentiment = 'very-negative';
-      }
+  //     // Create more varied price movements
+  //     if (randomFactor < 0.3) {
+  //       // Strong positive movement
+  //       change = Math.random() * 0.5 + 0.2;
+  //       sentiment = 'positive';
+  //     } else if (randomFactor < 0.6) {
+  //       // Neutral/slight positive movement
+  //       change = Math.random() * 0.3 - 0.1;
+  //       sentiment = change >= 0 ? 'neutral' : 'negative';
+  //     } else if (randomFactor < 0.9) {
+  //       // Negative movement
+  //       change = Math.random() * -0.3 - 0.1;
+  //       sentiment = 'negative';
+  //     } else {
+  //       // Strong negative movement
+  //       change = Math.random() * -0.6 - 0.3;
+  //       sentiment = 'very-negative';
+  //     }
 
-      const newPrice = Number.parseFloat((stockData.price + change).toFixed(2));
+  //     sentiment = 'very-negative';
 
-      setStockData({
-        price: newPrice,
-        change: Number.parseFloat(change.toFixed(2)),
-        changePercent: Number.parseFloat(
-          ((change / stockData.price) * 100).toFixed(2)
-        ),
-        sentiment,
-      });
-    }, 8000); // Longer interval for better visualization
+  //     const newPrice = Number.parseFloat((props.stockPrice.price + change).toFixed(2));
 
-    return () => clearInterval(interval);
-  }, [stockData.price]);
+  //     setStockData({
+  //       price: newPrice,
+  //       change: Number.parseFloat(change.toFixed(2)),
+  //       changePercent: Number.parseFloat(
+  //         ((change / props.stockPrice.price) * 100).toFixed(2)
+  //       ),
+  //       sentiment,
+  //     });
+  //   }, 8000); // Longer interval for better visualization
+
+  //   return () => clearInterval(interval);
+  // }, [props.stockPrice.price]);
 
   // Ensure hydration is complete before rendering theme-dependent components
   useEffect(() => {
@@ -89,22 +96,6 @@ export default function StockOverview() {
   if (!mounted) {
     return null;
   }
-
-  // Get weather condition text based on sentiment
-  const getWeatherCondition = () => {
-    switch (stockData.sentiment) {
-      case 'positive':
-        return 'Sunny';
-      case 'neutral':
-        return 'Partly Cloudy';
-      case 'negative':
-        return 'Rainy';
-      case 'very-negative':
-        return 'Thunderstorm';
-      default:
-        return 'Partly Cloudy';
-    }
-  };
 
   return (
     <div className="min-h-screen transition-colors duration-300 bg-gray-50 dark:bg-gray-950">
@@ -123,53 +114,32 @@ export default function StockOverview() {
               (Not Boring) Stocks
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <ThemeToggle />
-            <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800">
+            {/* Command Palette - Center for desktop, right for mobile */}
+            <div
+              className={cn(
+                !isMobile && 'flex-1 flex justify-center w-[270px]'
+              )}
+            >
+              <CommandPalette />
+            </div>
+            {/* <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800">
               <Menu className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-            </button>
+            </button> */}
           </div>
         </div>
 
         {isMobile ? (
           // Mobile Layout (Single Column)
           <>
-            {/* Location/Ticker */}
-            <div className="flex flex-row items-center justify-between">
-              {/* Company Logo */}
-              <div className="flex justify-center mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                  {stockInfo.logo ? (
-                    <Image
-                      src={stockInfo.logo}
-                      alt={`${stockInfo.name} logo`}
-                      width={64}
-                      height={64}
-                      className="max-w-full max-h-full"
-                    />
-                  ) : (
-                    <div className="text-xl font-bold text-gray-400">
-                      {stockInfo.ticker.substring(0, 2)}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="text-center mb-4">
-                <h1 className="text-lg tracking-widest font-medium text-gray-800 dark:text-gray-200">
-                  {stockInfo.ticker}
-                </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {getWeatherCondition()}
-                </p>
-              </div>
-            </div>
-
             {/* Main Stock Display */}
             <StockDisplay
-              price={stockData.price}
-              change={stockData.change}
-              changePercent={stockData.changePercent}
-              sentiment={stockData.sentiment}
+              price={props.stockPrice.price}
+              change={props.stockPrice.change}
+              changePercent={props.stockPrice.changePercent}
+              sentiment={props.sentiment}
+              stockInfo={props.stockInfo}
             />
 
             {/* Time Period Tabs */}
@@ -216,7 +186,7 @@ export default function StockOverview() {
               {/* Enhanced Chart for Mobile */}
               <div className="mt-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
                 <EnhancedStockChart
-                  sentiment={stockData.sentiment}
+                  sentiment={props.sentiment}
                   timeframe={selectedTimeframe}
                 />
               </div>
@@ -227,17 +197,19 @@ export default function StockOverview() {
 
             {/* Stock Info Card */}
             <div className="mt-8">
-              <StockInfo stockInfo={stockInfo} />
+              <StockInfo stockInfo={props.stockInfo} />
             </div>
 
             {/* Stock Recommendations */}
             <div className="mt-8">
-              <StockRecommendations industry={stockInfo.finnhubIndustry} />
+              <StockRecommendations
+                industry={props.stockInfo.finnhubIndustry}
+              />
             </div>
 
             {/* News Section */}
             <div className="mt-8">
-              <NewsSection ticker={stockInfo.ticker} />
+              <NewsSection ticker={props.stockInfo.ticker} />
             </div>
           </>
         ) : (
@@ -247,42 +219,14 @@ export default function StockOverview() {
               {/* Left Column - Main Stock Display */}
               <div className="col-span-12 lg:col-span-5 xl:col-span-4">
                 <div className="sticky top-6">
-                  <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg mb-6">
-                    <div className="flex flex-row items-center justify-between">
-                      {/* Company Logo */}
-                      <div className="flex justify-center mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                          {stockInfo.logo ? (
-                            <Image
-                              src={stockInfo.logo}
-                              alt={`${stockInfo.name} logo`}
-                              width={64}
-                              height={64}
-                              className="max-w-full max-h-full"
-                            />
-                          ) : (
-                            <div className="text-xl font-bold text-gray-400">
-                              {stockInfo.ticker.substring(0, 2)}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-center mb-4">
-                        <h1 className="text-lg tracking-widest font-medium text-gray-800 dark:text-gray-200">
-                          {stockInfo.ticker}
-                        </h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {getWeatherCondition()}
-                        </p>
-                      </div>
-                    </div>
-
+                  <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg mb-6 overflow-hidden">
                     {/* Main Stock Display */}
                     <StockDisplay
-                      price={stockData.price}
-                      change={stockData.change}
-                      changePercent={stockData.changePercent}
-                      sentiment={stockData.sentiment}
+                      price={props.stockPrice.price}
+                      change={props.stockPrice.change}
+                      changePercent={props.stockPrice.changePercent}
+                      sentiment={props.sentiment}
+                      stockInfo={props.stockInfo}
                     />
                   </div>
                 </div>
@@ -337,7 +281,7 @@ export default function StockOverview() {
 
                     {/* Enhanced Chart for Desktop */}
                     <EnhancedStockChart
-                      sentiment={stockData.sentiment}
+                      sentiment={props.sentiment}
                       timeframe={selectedTimeframe}
                     />
                   </Tabs>
@@ -347,16 +291,16 @@ export default function StockOverview() {
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                   {/* Stock Recommendations */}
                   <div className="flex flex-col gap-6">
-                    <StockInfo stockInfo={stockInfo} />
+                    <StockInfo stockInfo={props.stockInfo} />
                     <StockRecommendations
-                      industry={stockInfo.finnhubIndustry}
+                      industry={props.stockInfo.finnhubIndustry}
                     />
                   </div>
 
                   {/* News Section */}
                   <div className="flex flex-col gap-6">
                     <StockForecast />
-                    <NewsSection ticker={stockInfo.ticker} />
+                    <NewsSection ticker={props.stockInfo.ticker} />
                   </div>
                 </div>
               </div>
