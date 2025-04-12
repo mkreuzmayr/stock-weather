@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { StockDisplay } from '~/components/stock-display';
-import { StockInfo } from '~/components/stock-info';
 import { StockRecommendations } from '~/components/stock-recommendations';
 import { NewsSection } from '~/components/news-section';
 import { StockForecast } from '~/components/stock-forecast';
@@ -12,34 +11,12 @@ import { useMobile } from '~/hooks/use-mobile';
 import { EnhancedStockChart } from '~/components/enhanced-stock-chart';
 import { CommandPalette } from '~/components/command-palette';
 import { cn } from '~/lib/utils';
+import { StockInfo } from './stock-info';
+import { StockQuote, StockDetails } from '~/lib/finnhub';
 
 export function StockPage(props: {
-  stockInfo: {
-    country: string;
-    currency: string;
-    exchange: string;
-    ipo: string;
-    marketCapitalization: number;
-    name: string;
-    phone: string;
-    shareOutstanding: number;
-    ticker: string;
-    weburl: string;
-    logo: string;
-    finnhubIndustry: string;
-  };
-  stockPrice: {
-    symbol: string;
-    open: number;
-    high: number;
-    low: number;
-    price: number;
-    volume: number;
-    latestTradingDay: string;
-    previousClose: number;
-    change: number;
-    changePercent: number;
-  };
+  stockInfo: StockDetails;
+  stockQuote: StockQuote;
   sentiment: string;
 }) {
   const [mounted, setMounted] = useState(false);
@@ -135,9 +112,9 @@ export function StockPage(props: {
           <>
             {/* Main Stock Display */}
             <StockDisplay
-              price={props.stockPrice.price}
-              change={props.stockPrice.change}
-              changePercent={props.stockPrice.changePercent}
+              price={props.stockQuote.currentPrice}
+              change={props.stockQuote.change}
+              changePercent={props.stockQuote.percentChange}
               sentiment={props.sentiment}
               stockInfo={props.stockInfo}
             />
@@ -202,9 +179,7 @@ export function StockPage(props: {
 
             {/* Stock Recommendations */}
             <div className="mt-8">
-              <StockRecommendations
-                industry={props.stockInfo.finnhubIndustry}
-              />
+              <StockRecommendations industry={props.stockInfo.industry} />
             </div>
 
             {/* News Section */}
@@ -222,9 +197,9 @@ export function StockPage(props: {
                   <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg mb-6 overflow-hidden">
                     {/* Main Stock Display */}
                     <StockDisplay
-                      price={props.stockPrice.price}
-                      change={props.stockPrice.change}
-                      changePercent={props.stockPrice.changePercent}
+                      price={props.stockQuote.currentPrice}
+                      change={props.stockQuote.change}
+                      changePercent={props.stockQuote.percentChange}
                       sentiment={props.sentiment}
                       stockInfo={props.stockInfo}
                     />
@@ -292,9 +267,7 @@ export function StockPage(props: {
                   {/* Stock Recommendations */}
                   <div className="flex flex-col gap-6">
                     <StockInfo stockInfo={props.stockInfo} />
-                    <StockRecommendations
-                      industry={props.stockInfo.finnhubIndustry}
-                    />
+                    <StockRecommendations industry={props.stockInfo.industry} />
                   </div>
 
                   {/* News Section */}
@@ -310,9 +283,18 @@ export function StockPage(props: {
 
         {/* Footer */}
         <div className="mt-12 pt-4 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center">
-          <span className="text-xs text-gray-500 dark:text-gray-400">
-            Data from Finnhub
-          </span>
+          <div className="flex flex-row gap-2">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              Data from Finnhub
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">|</span>
+            <a
+              className="text-xs text-gray-500 dark:text-gray-400"
+              href="https://parqet.com/api"
+            >
+              Logos provided by Parqet
+            </a>
+          </div>
           <span className="text-xs text-gray-500 dark:text-gray-400">
             Updated just now
           </span>

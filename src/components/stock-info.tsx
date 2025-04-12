@@ -1,34 +1,17 @@
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
-import { formatLargeNumber } from "~/lib/utils"
-import { Building2, Calendar, Globe } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { formatLargeNumber } from '~/lib/utils';
+import { Building2, Calendar, Globe } from 'lucide-react';
+import { StockDetails } from '~/lib/finnhub';
 
-interface StockInfoProps {
-  stockInfo: {
-    country: string
-    currency: string
-    exchange: string
-    ipo: string
-    marketCapitalization: number
-    name: string
-    phone: string
-    shareOutstanding: number
-    ticker: string
-    weburl: string
-    logo: string
-    finnhubIndustry: string
-  }
-}
-
-export function StockInfo({ stockInfo }: StockInfoProps) {
-  // Format IPO date
+export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  }
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
 
   return (
     <Card className="overflow-hidden border-0 shadow-lg rounded-3xl bg-white dark:bg-gray-800">
@@ -44,8 +27,12 @@ export function StockInfo({ stockInfo }: StockInfoProps) {
               <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Industry</p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">{stockInfo.finnhubIndustry}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Industry
+              </p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {stockInfo.industry}
+              </p>
             </div>
           </div>
 
@@ -66,7 +53,9 @@ export function StockInfo({ stockInfo }: StockInfoProps) {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Market Cap</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Market Cap
+              </p>
               <p className="font-medium text-gray-900 dark:text-gray-100">
                 ${formatLargeNumber(stockInfo.marketCapitalization * 1000000)}
               </p>
@@ -78,8 +67,12 @@ export function StockInfo({ stockInfo }: StockInfoProps) {
               <Calendar className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">IPO Date</p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">{formatDate(stockInfo.ipo)}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                IPO Date
+              </p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {formatDate(stockInfo.ipo)}
+              </p>
             </div>
           </div>
 
@@ -88,19 +81,23 @@ export function StockInfo({ stockInfo }: StockInfoProps) {
               <Globe className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Website</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Website
+              </p>
               <a
-                href={stockInfo.weburl}
+                href={stockInfo.webUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
               >
-                {stockInfo.weburl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                {stockInfo.webUrl
+                  .replace(/^https?:\/\//, '')
+                  .replace(/\/$/, '')}
               </a>
             </div>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

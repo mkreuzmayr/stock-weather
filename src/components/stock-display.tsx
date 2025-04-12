@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { ArrowUp, ArrowDown, Sparkles } from 'lucide-react';
 import { useMobile } from '~/hooks/use-mobile';
 import Image from 'next/image';
+import { StockDetails } from '~/lib/finnhub';
 
 type ParticleBase = {
   opacity?: number;
@@ -114,11 +115,7 @@ export function StockDisplay(props: {
   change: number;
   changePercent: number;
   sentiment: string;
-  stockInfo: {
-    logo: string;
-    name: string;
-    ticker: string;
-  };
+  stockInfo: StockDetails;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
@@ -165,7 +162,7 @@ export function StockDisplay(props: {
             particles.push({
               type: 'ray',
               x: centerX,
-              y: centerY - (canvas.height * 0.15), // Match sun position
+              y: centerY - canvas.height * 0.15, // Match sun position
               angle: angle,
               sunRadius: rayStartRadius, // Store sun radius for drawing from edge
               length: rayLength,
@@ -181,7 +178,7 @@ export function StockDisplay(props: {
           particles.push({
             type: 'sun',
             x: centerX,
-            y: centerY - (canvas.height * 0.15), // Higher position
+            y: centerY - canvas.height * 0.15, // Higher position
             radius: sunRadius,
             color: '#FFD700', // Standard gold/yellow color
             shadowColor: 'rgba(255, 215, 0, 0.6)',
@@ -222,7 +219,7 @@ export function StockDisplay(props: {
             particles.push({
               type: 'ray',
               x: centerX - rayStartRadius * 0.5,
-              y: centerY - (canvas.height * 0.1), // Match sun position
+              y: centerY - canvas.height * 0.1, // Match sun position
               angle: angle,
               sunRadius: rayStartRadius, // Store sun radius for drawing from edge
               length: rayLength,
@@ -238,7 +235,7 @@ export function StockDisplay(props: {
           particles.push({
             type: 'sun',
             x: centerX - neutralSunRadius * 0.5, // Offset to left to make room for clouds
-            y: centerY - (canvas.height * 0.1), // Higher position
+            y: centerY - canvas.height * 0.1, // Higher position
             radius: neutralSunRadius,
             color: '#FFD700', // Standard gold/yellow color
             shadowColor: 'rgba(255, 215, 0, 0.5)',
@@ -309,7 +306,7 @@ export function StockDisplay(props: {
           particles.push({
             type: 'sun',
             x: centerX - rainySunRadius,
-            y: centerY - rainySunRadius * 0.5 - (canvas.height * 0.1), // Higher position
+            y: centerY - rainySunRadius * 0.5 - canvas.height * 0.1, // Higher position
             radius: rainySunRadius,
             color: '#FFD700', // Standard gold/yellow color
             shadowColor: 'rgba(255, 215, 0, 0.3)',
@@ -556,8 +553,10 @@ export function StockDisplay(props: {
             const sunEdgeY = p.y + Math.sin(p.angle) * (p.sunRadius || 0);
 
             // End point of ray
-            const rayEndX = p.x + Math.cos(p.angle) * ((p.sunRadius || 0) + p.length);
-            const rayEndY = p.y + Math.sin(p.angle) * ((p.sunRadius || 0) + p.length);
+            const rayEndX =
+              p.x + Math.cos(p.angle) * ((p.sunRadius || 0) + p.length);
+            const rayEndY =
+              p.y + Math.sin(p.angle) * ((p.sunRadius || 0) + p.length);
 
             // Draw ray with linear gradient
             const rayGradient = ctx.createLinearGradient(
@@ -867,26 +866,23 @@ export function StockDisplay(props: {
 
   const sentimentInfo = getSentimentInfo();
 
+  const logoTicker = props.stockInfo.ticker.replace('.', '-');
+  const logoUrl = `https://assets.parqet.com/logos/symbol/${logoTicker}`;
+
   return (
     <div className="relative">
       <div className="p-3">
         <div className="rounded-xl bg-background relative flex flex-row items-center justify-between z-10 p-1.5 shadow-2xl">
           {/* Company Logo */}
-          <div className="size-16 flex items-center justify-center p-3">
+          <div className="size-16 flex items-center justify-center p-2">
             <div className="rounded-md overflow-hidden">
-              {props.stockInfo.logo ? (
-                <Image
-                  src={props.stockInfo.logo}
-                  alt={`${props.stockInfo.name} logo`}
-                  width={64}
-                  height={64}
-                  className="max-w-full max-h-full"
-                />
-              ) : (
-                <div className="text-xl font-bold text-gray-400">
-                  {props.stockInfo.ticker.substring(0, 2)}
-                </div>
-              )}
+              <Image
+                src={logoUrl}
+                alt={`${props.stockInfo.name} logo`}
+                width={64}
+                height={64}
+                className="max-w-full max-h-full"
+              />
             </div>
           </div>
           <div className="text-centerh-16 flex flex-col px-3 gap-0 justify-center items-end">
@@ -932,8 +928,8 @@ export function StockDisplay(props: {
                 }`}
               >
                 {props.change >= 0 ? '+' : ''}
-                {props.change} ({props.change >= 0 ? '+' : ''}
-                {props.changePercent}%)
+                {props.change.toFixed(2)} ({props.change >= 0 ? '+' : ''}
+                {props.changePercent.toFixed(2)}%)
               </span>
             </div>
             {sentimentInfo.icon}

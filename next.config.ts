@@ -6,16 +6,13 @@ const nextConfig: NextConfig = {
   },
   /* config options here */
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
+      // https://assets.parqet.com/logos/symbol/AAPL
       {
-        hostname: "static.finnhub.io",
+        hostname: "assets.parqet.com",
         protocol: "https",
-        pathname: "/logo/**",
-      },
-      {
-        hostname: "static2.finnhub.io",
-        protocol: "https",
-        pathname: "/file/publicdatany/finnhubimage/stock_logo/**",
+        pathname: "/logos/symbol/**",
       },
     ],
   },
