@@ -4238,6 +4238,10 @@ const INITIAL_25_STOCKS = [
   },
 ] satisfies Stock[];
 
+export function getStockBySymbol(symbol: string) {
+  return RAW_STOCK_DATA.find((stock) => stock.symbol === symbol);
+}
+
 export function searchStocks(query: string, limit: number = 25) {
   const lowerCaseQuery = query.trim().toLowerCase();
   if (!lowerCaseQuery) {

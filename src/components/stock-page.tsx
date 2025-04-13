@@ -14,12 +14,14 @@ import { cn } from '~/lib/utils';
 import { StockInfo } from './stock-info';
 import { StockQuote, StockDetails } from '~/lib/finnhub';
 import { NewsItem } from '~/lib/polygon';
+import { RecommendationItem } from '~/app/[ticker]/page';
 
 export function StockPage(props: {
   stockInfo: StockDetails;
   stockQuote: StockQuote;
   sentiment: string;
   news: NewsItem[];
+  recommendations: RecommendationItem[];
 }) {
   const [mounted, setMounted] = useState(false);
   const isMobile = useMobile();
@@ -181,7 +183,7 @@ export function StockPage(props: {
 
             {/* Stock Recommendations */}
             <div className="mt-8">
-              <StockRecommendations industry={props.stockInfo.industry} />
+              <StockRecommendations recommendations={props.recommendations} />
             </div>
 
             {/* News Section */}
@@ -269,7 +271,7 @@ export function StockPage(props: {
                   {/* Stock Recommendations */}
                   <div className="flex flex-col gap-6">
                     <StockInfo stockInfo={props.stockInfo} />
-                    <StockRecommendations industry={props.stockInfo.industry} />
+                    <StockRecommendations recommendations={props.recommendations} />
                   </div>
 
                   {/* News Section */}
