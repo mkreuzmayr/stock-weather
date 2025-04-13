@@ -13,11 +13,13 @@ import { CommandPalette } from '~/components/command-palette';
 import { cn } from '~/lib/utils';
 import { StockInfo } from './stock-info';
 import { StockQuote, StockDetails } from '~/lib/finnhub';
+import { NewsItem } from '~/lib/polygon';
 
 export function StockPage(props: {
   stockInfo: StockDetails;
   stockQuote: StockQuote;
   sentiment: string;
+  news: NewsItem[];
 }) {
   const [mounted, setMounted] = useState(false);
   const isMobile = useMobile();
@@ -184,7 +186,7 @@ export function StockPage(props: {
 
             {/* News Section */}
             <div className="mt-8">
-              <NewsSection ticker={props.stockInfo.ticker} />
+              <NewsSection news={props.news} />
             </div>
           </>
         ) : (
@@ -273,7 +275,7 @@ export function StockPage(props: {
                   {/* News Section */}
                   <div className="flex flex-col gap-6">
                     <StockForecast />
-                    <NewsSection ticker={props.stockInfo.ticker} />
+                    <NewsSection news={props.news} />
                   </div>
                 </div>
               </div>

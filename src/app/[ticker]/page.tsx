@@ -1,5 +1,6 @@
 import { StockPage } from '~/components/stock-page';
 import { fetchStockDetails, fetchStockQuote, StockQuote } from '~/lib/finnhub';
+import { fetchLatestStockNews, NewsItem } from '~/lib/polygon';
 
 type Sentiment = 'positive' | 'neutral' | 'negative' | 'very-negative';
 
@@ -25,7 +26,7 @@ export default async function Home(pageProps: {
 
   const stockInfo = await fetchStockDetails(ticker);
   const stockQuote = await fetchStockQuote(ticker);
-  console.log(stockQuote);
+  const news = await fetchLatestStockNews(ticker);
 
   const sentiment = await calculateSentiment(stockQuote);
 
@@ -34,6 +35,7 @@ export default async function Home(pageProps: {
       stockInfo={stockInfo}
       stockQuote={stockQuote}
       sentiment={sentiment}
+      news={news}
     />
   );
 }
