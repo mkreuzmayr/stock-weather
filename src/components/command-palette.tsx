@@ -12,12 +12,13 @@ import { Search, X } from 'lucide-react';
 import { useMobile } from '~/hooks/use-mobile';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Stock, searchStocks } from '~/stock-data';
-
+import { useRouter } from 'next/navigation';
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const isMobile = useMobile();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const router = useRouter();
 
   // Filter stocks based on search query
   const filteredStocks = searchStocks(searchQuery);
@@ -76,6 +77,7 @@ export function CommandPalette() {
     // For now, we'll just close the command palette
     setOpen(false);
     setSearchQuery('');
+    router.push(`/${stock.symbol}`);
   };
 
   return (
