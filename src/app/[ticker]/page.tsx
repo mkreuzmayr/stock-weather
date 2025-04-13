@@ -9,7 +9,7 @@ async function calculateSentiment(stockQuote: StockQuote): Promise<Sentiment> {
   switch (true) {
     case currentPrice > 0 && percentChange > 0:
       return 'positive';
-    case currentPrice > 0 && percentChange < -10:
+    case currentPrice > 0 && percentChange < -5:
       return 'very-negative';
     case currentPrice > 0 && percentChange < 0:
       return 'negative';
