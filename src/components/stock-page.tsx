@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
+import { useQueryState } from 'nuqs';
 import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { StockDisplay } from '~/components/stock-display';
 import { StockRecommendations } from '~/components/stock-recommendations';
@@ -13,8 +14,20 @@ import { CommandPalette } from '~/components/command-palette';
 import { cn } from '~/lib/utils';
 import { StockInfo } from './stock-info';
 import { StockQuote, StockDetails } from '~/lib/finnhub';
-import { NewsItem } from '~/lib/polygon';
+import { NewsItem, Timeframe } from '~/lib/polygon';
 import { RecommendationItem } from '~/app/[ticker]/page';
+
+// Define AggregateBar type inline or import from polygon.ts if defined there
+interface AggregateBar {
+  c?: number;
+  h?: number;
+  l?: number;
+  n?: number;
+  o?: number;
+  t?: number;
+  v?: number;
+  vw?: number;
+}
 
 export function StockPage(props: {
   stockInfo: StockDetails;
@@ -22,58 +35,21 @@ export function StockPage(props: {
   sentiment: string;
   news: NewsItem[];
   recommendations: RecommendationItem[];
+  stockHistory: AggregateBar[] | null;
+  timeframe: Timeframe;
 }) {
   const [mounted, setMounted] = useState(false);
   const isMobile = useMobile();
-  const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
+  const [timeframe, setTimeframe] = useQueryState<Timeframe>('timeframe', {
+    defaultValue: "1D",
+    parse: (v) => v as Timeframe,
+    history: 'push',
+    shallow: false,
+  });
 
-  // Simulate price changes with more varied sentiment changes
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const randomFactor = Math.random();
-  //     let change, sentiment;
-
-  //     // Create more varied price movements
-  //     if (randomFactor < 0.3) {
-  //       // Strong positive movement
-  //       change = Math.random() * 0.5 + 0.2;
-  //       sentiment = 'positive';
-  //     } else if (randomFactor < 0.6) {
-  //       // Neutral/slight positive movement
-  //       change = Math.random() * 0.3 - 0.1;
-  //       sentiment = change >= 0 ? 'neutral' : 'negative';
-  //     } else if (randomFactor < 0.9) {
-  //       // Negative movement
-  //       change = Math.random() * -0.3 - 0.1;
-  //       sentiment = 'negative';
-  //     } else {
-  //       // Strong negative movement
-  //       change = Math.random() * -0.6 - 0.3;
-  //       sentiment = 'very-negative';
-  //     }
-
-  //     sentiment = 'very-negative';
-
-  //     const newPrice = Number.parseFloat((props.stockPrice.price + change).toFixed(2));
-
-  //     setStockData({
-  //       price: newPrice,
-  //       change: Number.parseFloat(change.toFixed(2)),
-  //       changePercent: Number.parseFloat(
-  //         ((change / props.stockPrice.price) * 100).toFixed(2)
-  //       ),
-  //       sentiment,
-  //     });
-  //   }, 8000); // Longer interval for better visualization
-
-  //   return () => clearInterval(interval);
-  // }, [props.stockPrice.price]);
-
-  // Ensure hydration is complete before rendering theme-dependent components
   useEffect(() => {
     setMounted(true);
   }, []);
-
   if (!mounted) {
     return null;
   }
@@ -126,9 +102,9 @@ export function StockPage(props: {
             {/* Time Period Tabs */}
             <div className="mb-6">
               <Tabs
-                defaultValue="1D"
+                value={props.timeframe}
                 className="w-full"
-                onValueChange={(value) => setSelectedTimeframe(value)}
+                onValueChange={(value) => setTimeframe(value as Timeframe)}
               >
                 <TabsList className="grid grid-cols-5 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
                   <TabsTrigger
@@ -168,7 +144,9 @@ export function StockPage(props: {
               <div className="mt-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
                 <EnhancedStockChart
                   sentiment={props.sentiment}
-                  timeframe={selectedTimeframe}
+                  timeframe={timeframe}
+                  previousClosePrice={props.stockQuote.previousClosePrice}
+                  stockHistory={props.stockHistory}
                 />
               </div>
             </div>
@@ -216,9 +194,9 @@ export function StockPage(props: {
                 {/* Time Period Tabs */}
                 <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg mb-6 flex">
                   <Tabs
-                    defaultValue="1D"
+                    value={timeframe}
                     className="w-full"
-                    onValueChange={(value) => setSelectedTimeframe(value)}
+                    onValueChange={(value) => setTimeframe(value as Timeframe)}
                   >
                     <div className="flex flex-row items-center justify-between">
                       <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
@@ -261,7 +239,9 @@ export function StockPage(props: {
                     {/* Enhanced Chart for Desktop */}
                     <EnhancedStockChart
                       sentiment={props.sentiment}
-                      timeframe={selectedTimeframe}
+                      timeframe={timeframe}
+                      previousClosePrice={props.stockQuote.previousClosePrice}
+                      stockHistory={props.stockHistory}
                     />
                   </Tabs>
                 </div>
@@ -271,7 +251,9 @@ export function StockPage(props: {
                   {/* Stock Recommendations */}
                   <div className="flex flex-col gap-6">
                     <StockInfo stockInfo={props.stockInfo} />
-                    <StockRecommendations recommendations={props.recommendations} />
+                    <StockRecommendations
+                      recommendations={props.recommendations}
+                    />
                   </div>
 
                   {/* News Section */}
