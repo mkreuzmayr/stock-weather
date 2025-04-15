@@ -1,28 +1,20 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { CommandPalette } from '~/components/command-palette';
-import { EnhancedStockChart } from '~/components/enhanced-stock-chart';
-import { NewsSection } from '~/components/news-section';
-import { StockDisplay } from '~/components/stock-display';
-import { StockForecast } from '~/components/stock-forecast';
-import { StockRecommendations } from '~/components/stock-recommendations';
 import { ThemeToggle } from '~/components/theme-toggle';
-import { StockSentiment } from '~/data/get-sentiment';
-import { RecommendationItem } from '~/data/get-similar-stocks';
 import { useMobile } from '~/hooks/use-mobile';
-import { StockDetails, StockQuote } from '~/lib/finnhub';
-import { AggregateBar, NewsItem, Timeframe } from '~/lib/polygon';
 import { cn } from '~/lib/utils';
-import { StockInfo } from './stock-info';
 
 export function StockPageLayout(props: {
-  stockInfo: StockDetails;
-  stockQuote: StockQuote;
-  sentiment: StockSentiment;
-  news: NewsItem[];
-  recommendations: RecommendationItem[];
-  stockHistory: AggregateBar[] | null;
-  timeframe: Timeframe;
+  widgets: {
+    chart: ReactNode;
+    companyInfo: ReactNode;
+    forecast: ReactNode;
+    news: ReactNode;
+    recommendations: ReactNode;
+    weather: ReactNode;
+  };
 }) {
   const isMobile = useMobile();
 
@@ -59,38 +51,22 @@ export function StockPageLayout(props: {
           // Mobile Layout (Single Column)
           <>
             {/* Main Stock Display */}
-            <StockDisplay
-              price={props.stockQuote.currentPrice}
-              change={props.stockQuote.change}
-              changePercent={props.stockQuote.percentChange}
-              sentiment={props.sentiment}
-              stockInfo={props.stockInfo}
-            />
+            {props.widgets.weather}
 
             {/* Time Period Tabs */}
-            <EnhancedStockChart
-              sentiment={props.sentiment}
-              previousClosePrice={props.stockQuote.previousClosePrice}
-              stockHistory={props.stockHistory}
-            />
+            {props.widgets.chart}
 
             {/* Stock Forecast */}
-            <StockForecast />
+            {props.widgets.forecast}
 
             {/* Stock Info Card */}
-            <div className="mt-8">
-              <StockInfo stockInfo={props.stockInfo} />
-            </div>
+            <div className="mt-8">{props.widgets.companyInfo}</div>
 
             {/* Stock Recommendations */}
-            <div className="mt-8">
-              <StockRecommendations recommendations={props.recommendations} />
-            </div>
+            <div className="mt-8">{props.widgets.recommendations}</div>
 
             {/* News Section */}
-            <div className="mt-8">
-              <NewsSection news={props.news} />
-            </div>
+            <div className="mt-8">{props.widgets.news}</div>
           </>
         ) : (
           // Desktop Layout (Multi-Column)
@@ -101,13 +77,7 @@ export function StockPageLayout(props: {
                 <div className="sticky top-6">
                   <div className="mb-6 overflow-hidden rounded-3xl bg-white shadow-lg dark:bg-gray-800">
                     {/* Main Stock Display */}
-                    <StockDisplay
-                      price={props.stockQuote.currentPrice}
-                      change={props.stockQuote.change}
-                      changePercent={props.stockQuote.percentChange}
-                      sentiment={props.sentiment}
-                      stockInfo={props.stockInfo}
-                    />
+                    {props.widgets.weather}
                   </div>
                 </div>
               </div>
@@ -115,26 +85,20 @@ export function StockPageLayout(props: {
               {/* Right Column - Charts, Recommendations, News */}
               <div className="col-span-12 lg:col-span-7 xl:col-span-8">
                 {/* Time Period Tabs */}
-                <EnhancedStockChart
-                  sentiment={props.sentiment}
-                  previousClosePrice={props.stockQuote.previousClosePrice}
-                  stockHistory={props.stockHistory}
-                />
+                {props.widgets.chart}
 
                 {/* Two Column Layout for Recommendations and News */}
                 <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                   {/* Stock Recommendations */}
                   <div className="flex flex-col gap-6">
-                    <StockInfo stockInfo={props.stockInfo} />
-                    <StockRecommendations
-                      recommendations={props.recommendations}
-                    />
+                    {props.widgets.companyInfo}
+                    {props.widgets.recommendations}
                   </div>
 
                   {/* News Section */}
                   <div className="flex flex-col gap-6">
-                    <StockForecast />
-                    <NewsSection news={props.news} />
+                    {props.widgets.forecast}
+                    {props.widgets.news}
                   </div>
                 </div>
               </div>

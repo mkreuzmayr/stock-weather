@@ -1,4 +1,5 @@
 'use client';
+
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -19,6 +20,11 @@ export function CommandPalette() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Filter stocks based on search query
   const filteredStocks = searchStocks(searchQuery);
@@ -79,6 +85,10 @@ export function CommandPalette() {
     setSearchQuery('');
     router.push(`/${stock.symbol}`);
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <>
