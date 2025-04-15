@@ -6,24 +6,23 @@ export function StockForecast() {
   // Mock forecast data with weather-like conditions
   const forecast = [
     {
-      day: 'TODAY',
+      day: '1D',
       trend: 'up',
       condition: 'sunny',
       high: 183.25,
       low: 180.15,
     },
-    { day: 'TUE', trend: 'up', condition: 'sunny', high: 185.4, low: 182.3 },
+    { day: '1W', trend: 'up', condition: 'sunny', high: 185.4, low: 182.3 },
     {
-      day: 'WED',
+      day: '1M',
       trend: 'down',
       condition: 'cloudy',
       high: 184.75,
       low: 181.2,
     },
-    { day: 'THU', trend: 'down', condition: 'rainy', high: 183.5, low: 180.6 },
-    { day: 'FRI', trend: 'up', condition: 'sunny', high: 186.2, low: 183.1 },
-    { day: 'MON', trend: 'down', condition: 'rainy', high: 185.3, low: 182.4 },
-    { day: 'TUE', trend: 'down', condition: 'storm', high: 184.5, low: 181.25 },
+    { day: '3M', trend: 'down', condition: 'rainy', high: 183.5, low: 180.6 },
+    { day: '6M', trend: 'up', condition: 'sunny', high: 186.2, low: 183.1 },
+    { day: '1Y', trend: 'down', condition: 'rainy', high: 185.3, low: 182.4 },
   ];
 
   const getConditionIcon = (condition: string) => {
@@ -46,23 +45,21 @@ export function StockForecast() {
   };
 
   return (
-    <div className="rounded-3xl bg-white p-4 shadow-lg dark:bg-gray-800">
-      <div className="mb-4 flex items-center justify-between">
-        {forecast.map((day, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <div className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
-              {day.day}
-            </div>
-            <div className="mb-1">{getConditionIcon(day.condition)}</div>
-            <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
-              {day.high.toFixed(1)}
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
-              {day.low.toFixed(1)}
-            </div>
+    <div className="flex items-center justify-between rounded-3xl bg-white px-8 py-6 shadow-lg dark:bg-gray-800">
+      {forecast.map((day, index) => (
+        <div key={index} className="flex flex-col items-center">
+          <div className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+            {day.day}
           </div>
-        ))}
-      </div>
+          <div className="mb-1">{getConditionIcon(day.condition)}</div>
+          <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
+            {day.high.toFixed(1)}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            {day.low.toFixed(1)}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
