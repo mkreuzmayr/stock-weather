@@ -24,7 +24,6 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { Timeframe } from '~/lib/polygon';
-import { Skeleton } from './ui/skeleton';
 
 // Define a type for the processed chart data point
 interface ChartDataPoint {

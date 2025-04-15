@@ -1,44 +1,15 @@
-import { StockPage } from '~/components/stock-page';
-import {
-  fetchStockDetails,
-  fetchStockQuote,
-  StockQuote,
-  StockDetails,
-} from '~/lib/finnhub';
+import { StockPageLayout } from '~/components/stock-page-layout';
+import { getSimilarStocks } from '~/data/get-similar-stocks';
+import { fetchStockDetails, fetchStockQuote } from '~/lib/finnhub';
 import {
   fetchLatestStockNews,
   fetchStockHistory,
   Timeframe,
 } from '~/lib/polygon';
-import { getRelatedStocks } from '~/stock-data';
+import { getSentiment } from '~/data/get-sentiment';
+import { PageProps } from '~/lib/next-types';
 
-type Sentiment = 'positive' | 'neutral' | 'negative' | 'very-negative';
-
-async function calculateSentiment(stockQuote: StockQuote): Promise<Sentiment> {
-  const { currentPrice, percentChange } = stockQuote;
-
-  switch (true) {
-    case currentPrice > 0 && percentChange > 0:
-      return 'positive';
-    case currentPrice > 0 && percentChange < -5:
-      return 'very-negative';
-    case currentPrice > 0 && percentChange < 0:
-      return 'negative';
-    default:
-      return 'neutral';
-  }
-}
-
-export interface RecommendationItem {
-  ticker: string;
-  details: StockDetails;
-  quote: StockQuote;
-}
-
-export default async function Home(pageProps: {
-  params: Promise<{ ticker: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function Home(pageProps: PageProps<{ ticker: string }>) {
   const { ticker } = await pageProps.params;
   const searchParams = await pageProps.searchParams;
 
@@ -57,43 +28,12 @@ export default async function Home(pageProps: {
     fetchStockHistory(ticker, { timeframe: initialTimeframe }),
   ]);
 
-  const recommendationsPromises = getRelatedStocks(ticker).map(
-    async (relatedStock) => {
-      const relatedTicker = relatedStock.symbol;
+  const recommendationsData = await getSimilarStocks(ticker);
 
-      try {
-        const [details, quote] = await Promise.all([
-          fetchStockDetails(relatedTicker),
-          fetchStockQuote(relatedTicker),
-        ]);
-        if (details && quote) {
-          return { ticker: relatedTicker, details, quote };
-        } else {
-          console.warn(
-            `Could not fetch details or quote for related ticker: ${relatedTicker}`
-          );
-          return undefined;
-        }
-      } catch (error) {
-        console.error(
-          `Error fetching data for related ticker ${relatedTicker}:`,
-          error
-        );
-        return undefined;
-      }
-    }
-  );
-
-  const resolvedRecommendations = await Promise.all(recommendationsPromises);
-
-  const recommendationsData = resolvedRecommendations.filter(
-    (item): item is RecommendationItem => item !== undefined
-  );
-
-  const sentiment = await calculateSentiment(stockQuote);
+  const sentiment = await getSentiment(stockQuote);
 
   return (
-    <StockPage
+    <StockPageLayout
       stockInfo={stockInfo}
       stockQuote={stockQuote}
       sentiment={sentiment}

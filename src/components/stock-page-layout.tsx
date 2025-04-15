@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
 import { useQueryState } from 'nuqs';
 import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { StockDisplay } from '~/components/stock-display';
@@ -15,10 +14,10 @@ import { cn } from '~/lib/utils';
 import { StockInfo } from './stock-info';
 import { StockQuote, StockDetails } from '~/lib/finnhub';
 import { NewsItem, Timeframe } from '~/lib/polygon';
-import { RecommendationItem } from '~/app/[ticker]/page';
+import { RecommendationItem } from '~/data/get-similar-stocks';
+import { StockSentiment } from '~/data/get-sentiment';
 
-// Define AggregateBar type inline or import from polygon.ts if defined there
-interface AggregateBar {
+type AggregateBar = {
   c?: number;
   h?: number;
   l?: number;
@@ -27,32 +26,25 @@ interface AggregateBar {
   t?: number;
   v?: number;
   vw?: number;
-}
+};
 
-export function StockPage(props: {
+export function StockPageLayout(props: {
   stockInfo: StockDetails;
   stockQuote: StockQuote;
-  sentiment: string;
+  sentiment: StockSentiment;
   news: NewsItem[];
   recommendations: RecommendationItem[];
   stockHistory: AggregateBar[] | null;
   timeframe: Timeframe;
 }) {
-  const [mounted, setMounted] = useState(false);
   const isMobile = useMobile();
+
   const [timeframe, setTimeframe] = useQueryState<Timeframe>('timeframe', {
-    defaultValue: "1D",
+    defaultValue: '1D',
     parse: (v) => v as Timeframe,
     history: 'push',
     shallow: false,
   });
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen transition-colors duration-300 bg-gray-50 dark:bg-gray-950">
