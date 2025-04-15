@@ -129,22 +129,3 @@ export async function fetchLatestStockNews(ticker: string) {
 }
 
 export type NewsItem = Awaited<ReturnType<typeof fetchLatestStockNews>>[number];
-
-export async function fetchRelatedStocks(ticker: string) {
-  'use cache';
-  cacheTag(`related-stocks`, ticker);
-  cacheLife('days');
-
-  const res = await fetch(
-    `https://api.polygon.io/v1/related-companies/${ticker}?apiKey=${env.POLYGON_API_KEY}`
-  );
-
-  const data = (await res.json()) as {
-    request_id: string;
-    results: {
-      ticker: string;
-    }[];
-  };
-
-  return data.results.map((result) => result.ticker);
-}

@@ -7,10 +7,10 @@ import {
 } from '~/lib/finnhub';
 import {
   fetchLatestStockNews,
-  NewsItem,
-  fetchRelatedStocks,
+  fetchStockHistory,
+  Timeframe,
 } from '~/lib/polygon';
-import { getStockBySymbol } from '~/stock-data';
+import { getRelatedStocks } from '~/stock-data';
 
 type Sentiment = 'positive' | 'neutral' | 'negative' | 'very-negative';
 
@@ -37,32 +37,57 @@ export interface RecommendationItem {
 
 export default async function Home(pageProps: {
   params: Promise<{ ticker: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { ticker } = await pageProps.params;
+  const searchParams = await pageProps.searchParams;
 
-  const [stockInfo, stockQuote, news, relatedTickers] = await Promise.all([
+  const rawTimeframe = searchParams.timeframe;
+  const validTimeframes: Timeframe[] = ['1D', '1W', '1M', '3M', '6M', '1Y'];
+  const initialTimeframe =
+    typeof rawTimeframe === 'string' &&
+    validTimeframes.includes(rawTimeframe as Timeframe)
+      ? (rawTimeframe as Timeframe)
+      : '1D';
+
+  const [stockInfo, stockQuote, news, initialStockHistory] = await Promise.all([
     fetchStockDetails(ticker),
     fetchStockQuote(ticker),
     fetchLatestStockNews(ticker),
-    fetchRelatedStocks(ticker),
+    fetchStockHistory(ticker, { timeframe: initialTimeframe }),
   ]);
 
-  const recommendationsData = await Promise.all(
-    relatedTickers
-      .slice(0, 6)
-      .map(async (relatedTicker) => {
-        if (!getStockBySymbol(relatedTicker)) {
-          return undefined!;
-        }
+  const recommendationsPromises = getRelatedStocks(ticker).map(
+    async (relatedStock) => {
+      const relatedTicker = relatedStock.symbol;
 
+      try {
         const [details, quote] = await Promise.all([
           fetchStockDetails(relatedTicker),
           fetchStockQuote(relatedTicker),
         ]);
+        if (details && quote) {
+          return { ticker: relatedTicker, details, quote };
+        } else {
+          console.warn(
+            `Could not fetch details or quote for related ticker: ${relatedTicker}`
+          );
+          return undefined;
+        }
+      } catch (error) {
+        console.error(
+          `Error fetching data for related ticker ${relatedTicker}:`,
+          error
+        );
+        return undefined;
+      }
+    }
+  );
 
-        return { ticker: relatedTicker, details, quote };
-      })
-      .filter((item) => item !== undefined)
+  const resolvedRecommendations = await Promise.all(recommendationsPromises);
+
+  const recommendationsData = resolvedRecommendations.filter(
+    (item): item is RecommendationItem => item !== undefined
   );
 
   const sentiment = await calculateSentiment(stockQuote);
@@ -74,6 +99,8 @@ export default async function Home(pageProps: {
       sentiment={sentiment}
       news={news}
       recommendations={recommendationsData}
+      stockHistory={initialStockHistory}
+      timeframe={initialTimeframe}
     />
   );
 }

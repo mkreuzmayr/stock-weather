@@ -4242,6 +4242,36 @@ export function getStockBySymbol(symbol: string) {
   return RAW_STOCK_DATA.find((stock) => stock.symbol === symbol);
 }
 
+export function getRelatedStocks(symbol: string, limit: number = 6) {
+  const inputStock = getStockBySymbol(symbol);
+
+  if (!inputStock) {
+    return [];
+  }
+
+  const relatedStocks = RAW_STOCK_DATA.filter((stock) => {
+    return (
+      stock.sector === inputStock.sector &&
+      stock.industry === inputStock.industry &&
+      stock.symbol !== symbol
+    );
+  });
+
+  if (relatedStocks.length >= limit) {
+    return relatedStocks.slice(0, limit);
+  }
+
+  const additionalStocks = RAW_STOCK_DATA.filter((stock) => {
+    return (
+      stock.sector === inputStock.sector &&
+      !relatedStocks.includes(stock) &&
+      stock.symbol !== symbol
+    );
+  });
+
+  return [...relatedStocks, ...additionalStocks].slice(0, limit);
+}
+
 export function searchStocks(query: string, limit: number = 25) {
   const lowerCaseQuery = query.trim().toLowerCase();
   if (!lowerCaseQuery) {
