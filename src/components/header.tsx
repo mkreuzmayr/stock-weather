@@ -3,7 +3,7 @@ import { ThemeToggle } from './theme-toggle';
 
 export function Header() {
   return (
-    <div className="mb-6 flex items-center justify-between">
+    <div className="mb-6 flex items-center justify-between px-4">
       <div className="flex items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white">
           <div className="h-5 w-5 rounded-full bg-white dark:bg-black"></div>
