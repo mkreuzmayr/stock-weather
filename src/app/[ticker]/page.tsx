@@ -1,13 +1,13 @@
 import { StockPageLayout } from '~/components/stock-page-layout';
+import { getSentiment } from '~/data/get-sentiment';
 import { getSimilarStocks } from '~/data/get-similar-stocks';
 import { fetchStockDetails, fetchStockQuote } from '~/lib/finnhub';
+import { PageProps } from '~/lib/next-types';
 import {
   fetchLatestStockNews,
   fetchStockHistory,
   Timeframe,
 } from '~/lib/polygon';
-import { getSentiment } from '~/data/get-sentiment';
-import { PageProps } from '~/lib/next-types';
 
 export default async function Home(pageProps: PageProps<{ ticker: string }>) {
   const { ticker } = await pageProps.params;

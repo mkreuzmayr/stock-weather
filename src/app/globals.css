@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -127,7 +127,12 @@
   body {
     @apply bg-background text-foreground;
     color: var(--foreground-rgb);
-    background: linear-gradient(to bottom, transparent, var(--background-end-rgb)) var(--background-start-rgb);
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--background-end-rgb)
+      )
+      var(--background-start-rgb);
   }
 }
 

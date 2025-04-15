@@ -1,7 +1,9 @@
 import { restClient } from '@polygon.io/client-js';
 import { subDays, subMonths, subYears } from 'date-fns';
-import { unstable_cacheLife as cacheLife } from 'next/cache';
-import { unstable_cacheTag as cacheTag } from 'next/cache';
+import {
+  unstable_cacheLife as cacheLife,
+  unstable_cacheTag as cacheTag,
+} from 'next/cache';
 import { env } from '~/env';
 
 const polygon = restClient(env.POLYGON_API_KEY);

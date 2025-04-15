@@ -1,5 +1,8 @@
 'use client';
+import { Search, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import {
   CommandDialog,
   CommandEmpty,
@@ -8,11 +11,8 @@ import {
   CommandItem,
   CommandList,
 } from '~/components/ui/command';
-import { Search, X } from 'lucide-react';
 import { useMobile } from '~/hooks/use-mobile';
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Stock, searchStocks } from '~/stock-data';
-import { useRouter } from 'next/navigation';
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const isMobile = useMobile();
@@ -83,16 +83,16 @@ export function CommandPalette() {
   return (
     <>
       {!isMobile && (
-        <div className="relative w-full max-w-sm mx-auto">
+        <div className="relative mx-auto w-full max-w-sm">
           <button
             onClick={() => setOpen(true)}
-            className="flex h-12 w-full items-center justify-between rounded-2xl shadow-sm bg-background px-4 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="bg-background ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-12 w-full items-center justify-between rounded-2xl px-4 py-3 text-sm shadow-sm focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="text-muted-foreground flex items-center gap-2">
               <Search className="h-4 w-4" />
               <span>Search stocks...</span>
             </div>
-            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+            <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
               <span className="text-xs">
                 {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}
               </span>
@@ -105,7 +105,7 @@ export function CommandPalette() {
       {isMobile && (
         <button
           onClick={() => setOpen(true)}
-          className="flex p-2 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center justify-center rounded-full p-2 transition-colors"
           aria-label="Search stocks"
         >
           <Search className="h-5 w-5" />
@@ -124,14 +124,14 @@ export function CommandPalette() {
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
           <CommandInput
             placeholder="Search stocks by name or ticker..."
-            className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            className="placeholder:text-muted-foreground flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
             value={searchQuery}
             onValueChange={setSearchQuery}
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="rounded-full p-1 hover:bg-muted"
+              className="hover:bg-muted rounded-full p-1"
               aria-label="Clear search"
             >
               <X className="h-4 w-4 opacity-50" />
@@ -151,22 +151,22 @@ export function CommandPalette() {
               />
             ))}
           </CommandGroup>
-          <div className="py-2 px-2 text-xs text-muted-foreground border-t">
+          <div className="text-muted-foreground border-t px-2 py-2 text-xs">
             <div className="flex items-center justify-between">
               <div>
                 <span className="opacity-70">Press </span>
-                <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
+                <kbd className="bg-muted pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium select-none">
                   ↑
                 </kbd>
                 <span className="opacity-70"> </span>
-                <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
+                <kbd className="bg-muted pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium select-none">
                   ↓
                 </kbd>
                 <span className="opacity-70"> to navigate</span>
               </div>
               <div>
                 <span className="opacity-70">Press </span>
-                <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
+                <kbd className="bg-muted pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium select-none">
                   Enter
                 </kbd>
                 <span className="opacity-70"> to select</span>
@@ -192,7 +192,7 @@ function ListStockItem(props: {
     <CommandItem
       key={props.stock.symbol}
       onSelect={() => props.handleStockSelect(props.stock)}
-      className={`flex items-center justify-between py-2 px-2 ${
+      className={`flex items-center justify-between px-2 py-2 ${
         props.index === props.selectedIndex ? 'bg-accent' : ''
       }`}
     >
@@ -203,7 +203,7 @@ function ListStockItem(props: {
         </Avatar>
         <div>
           <div className="font-medium">{props.stock.name}</div>
-          <div className="text-xs text-muted-foreground">
+          <div className="text-muted-foreground text-xs">
             {props.stock.symbol}
           </div>
         </div>

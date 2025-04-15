@@ -1,21 +1,21 @@
 'use client';
 
 import { useQueryState } from 'nuqs';
-import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
-import { StockDisplay } from '~/components/stock-display';
-import { StockRecommendations } from '~/components/stock-recommendations';
-import { NewsSection } from '~/components/news-section';
-import { StockForecast } from '~/components/stock-forecast';
-import { ThemeToggle } from '~/components/theme-toggle';
-import { useMobile } from '~/hooks/use-mobile';
-import { EnhancedStockChart } from '~/components/enhanced-stock-chart';
 import { CommandPalette } from '~/components/command-palette';
+import { EnhancedStockChart } from '~/components/enhanced-stock-chart';
+import { NewsSection } from '~/components/news-section';
+import { StockDisplay } from '~/components/stock-display';
+import { StockForecast } from '~/components/stock-forecast';
+import { StockRecommendations } from '~/components/stock-recommendations';
+import { ThemeToggle } from '~/components/theme-toggle';
+import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
+import { StockSentiment } from '~/data/get-sentiment';
+import { RecommendationItem } from '~/data/get-similar-stocks';
+import { useMobile } from '~/hooks/use-mobile';
+import { StockDetails, StockQuote } from '~/lib/finnhub';
+import { NewsItem, Timeframe } from '~/lib/polygon';
 import { cn } from '~/lib/utils';
 import { StockInfo } from './stock-info';
-import { StockQuote, StockDetails } from '~/lib/finnhub';
-import { NewsItem, Timeframe } from '~/lib/polygon';
-import { RecommendationItem } from '~/data/get-similar-stocks';
-import { StockSentiment } from '~/data/get-sentiment';
 
 type AggregateBar = {
   c?: number;
@@ -47,17 +47,17 @@ export function StockPageLayout(props: {
   });
 
   return (
-    <div className="min-h-screen transition-colors duration-300 bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-50 transition-colors duration-300 dark:bg-gray-950">
       <div
         className={`container mx-auto px-4 py-6 ${
           isMobile ? 'max-w-md' : 'max-w-7xl'
         }`}
       >
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-black dark:bg-white flex items-center justify-center">
-              <div className="w-5 h-5 rounded-full bg-white dark:bg-black"></div>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white">
+              <div className="h-5 w-5 rounded-full bg-white dark:bg-black"></div>
             </div>
             <span className="font-mono text-sm text-gray-600 dark:text-gray-400">
               (Not Boring) Stocks
@@ -68,7 +68,7 @@ export function StockPageLayout(props: {
             {/* Command Palette - Center for desktop, right for mobile */}
             <div
               className={cn(
-                !isMobile && 'flex-1 flex justify-center w-[270px]'
+                !isMobile && 'flex w-[270px] flex-1 justify-center'
               )}
             >
               <CommandPalette />
@@ -98,34 +98,34 @@ export function StockPageLayout(props: {
                 className="w-full"
                 onValueChange={(value) => setTimeframe(value as Timeframe)}
               >
-                <TabsList className="grid grid-cols-5 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
+                <TabsList className="grid grid-cols-5 rounded-xl bg-gray-100 p-1 dark:bg-gray-800">
                   <TabsTrigger
                     value="1D"
-                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                   >
                     1D
                   </TabsTrigger>
                   <TabsTrigger
                     value="1W"
-                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                   >
                     1W
                   </TabsTrigger>
                   <TabsTrigger
                     value="1M"
-                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                   >
                     1M
                   </TabsTrigger>
                   <TabsTrigger
                     value="3M"
-                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                   >
                     3M
                   </TabsTrigger>
                   <TabsTrigger
                     value="1Y"
-                    className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                   >
                     1Y
                   </TabsTrigger>
@@ -133,7 +133,7 @@ export function StockPageLayout(props: {
               </Tabs>
 
               {/* Enhanced Chart for Mobile */}
-              <div className="mt-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+              <div className="mt-4 rounded-xl bg-white p-4 shadow-md dark:bg-gray-800">
                 <EnhancedStockChart
                   sentiment={props.sentiment}
                   timeframe={timeframe}
@@ -168,7 +168,7 @@ export function StockPageLayout(props: {
               {/* Left Column - Main Stock Display */}
               <div className="col-span-12 lg:col-span-5 xl:col-span-4">
                 <div className="sticky top-6">
-                  <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg mb-6 overflow-hidden">
+                  <div className="mb-6 overflow-hidden rounded-3xl bg-white shadow-lg dark:bg-gray-800">
                     {/* Main Stock Display */}
                     <StockDisplay
                       price={props.stockQuote.currentPrice}
@@ -184,44 +184,44 @@ export function StockPageLayout(props: {
               {/* Right Column - Charts, Recommendations, News */}
               <div className="col-span-12 lg:col-span-7 xl:col-span-8">
                 {/* Time Period Tabs */}
-                <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg mb-6 flex">
+                <div className="mb-6 flex rounded-3xl bg-white p-6 shadow-lg dark:bg-gray-800">
                   <Tabs
                     value={timeframe}
                     className="w-full"
                     onValueChange={(value) => setTimeframe(value as Timeframe)}
                   >
                     <div className="flex flex-row items-center justify-between">
-                      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                      <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
                         Price Chart
                       </h2>
-                      <TabsList className="grid grid-cols-5 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl mb-4">
+                      <TabsList className="mb-4 grid grid-cols-5 rounded-xl bg-gray-100 p-1 dark:bg-gray-800">
                         <TabsTrigger
                           value="1D"
-                          className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                          className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                         >
                           1D
                         </TabsTrigger>
                         <TabsTrigger
                           value="1W"
-                          className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                          className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                         >
                           1W
                         </TabsTrigger>
                         <TabsTrigger
                           value="1M"
-                          className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                          className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                         >
                           1M
                         </TabsTrigger>
                         <TabsTrigger
                           value="3M"
-                          className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                          className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                         >
                           3M
                         </TabsTrigger>
                         <TabsTrigger
                           value="1Y"
-                          className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm"
+                          className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
                         >
                           1Y
                         </TabsTrigger>
@@ -239,7 +239,7 @@ export function StockPageLayout(props: {
                 </div>
 
                 {/* Two Column Layout for Recommendations and News */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                   {/* Stock Recommendations */}
                   <div className="flex flex-col gap-6">
                     <StockInfo stockInfo={props.stockInfo} />
@@ -260,7 +260,7 @@ export function StockPageLayout(props: {
         )}
 
         {/* Footer */}
-        <div className="mt-12 pt-4 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center">
+        <div className="mt-12 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-800">
           <div className="flex flex-row gap-2">
             <span className="text-xs text-gray-500 dark:text-gray-400">
               Data from Finnhub

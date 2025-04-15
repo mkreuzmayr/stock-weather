@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { ArrowDown, ArrowUp, Sparkles } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { ArrowUp, ArrowDown, Sparkles } from 'lucide-react';
-import { useMobile } from '~/hooks/use-mobile';
 import Image from 'next/image';
+import { useEffect, useRef } from 'react';
+import { useMobile } from '~/hooks/use-mobile';
 import { StockDetails } from '~/lib/finnhub';
 
 type ParticleBase = {
@@ -872,20 +872,20 @@ export function StockDisplay(props: {
   return (
     <div className="relative">
       <div className="p-3">
-        <div className="rounded-xl bg-background relative flex flex-row items-center justify-between z-10 p-1.5 shadow-2xl">
+        <div className="bg-background relative z-10 flex flex-row items-center justify-between rounded-xl p-1.5 shadow-2xl">
           {/* Company Logo */}
-          <div className="size-16 flex items-center justify-center p-2">
-            <div className="rounded-md overflow-hidden">
+          <div className="flex size-16 items-center justify-center p-2">
+            <div className="overflow-hidden rounded-md">
               <Image
                 src={logoUrl}
                 alt={`${props.stockInfo.name} logo`}
                 width={64}
                 height={64}
-                className="max-w-full max-h-full"
+                className="max-h-full max-w-full"
               />
             </div>
           </div>
-          <div className="text-centerh-16 flex flex-col px-3 gap-0 justify-center items-end">
+          <div className="text-centerh-16 flex flex-col items-end justify-center gap-0 px-3">
             <h1 className="text-lg font-medium text-gray-800 dark:text-gray-200">
               {props.stockInfo.name}
             </h1>
@@ -896,31 +896,31 @@ export function StockDisplay(props: {
         </div>
       </div>
 
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#ffffff] dark:to-gray-900"></div>
 
       {/* Canvas for 3D stock visualization */}
       <div
-        className={` ${isMobile ? 'h-[300px]' : 'h-[400px]'} mb-4 -mx-7`}
+        className={` ${isMobile ? 'h-[300px]' : 'h-[400px]'} -mx-7 mb-4`}
       ></div>
 
       {/* Price display */}
-      <div className="relative z-10 text-center px-8 pb-8">
+      <div className="relative z-10 px-8 pb-8 text-center">
         <div className="inline-block">
           <div
             className={`${
               isMobile ? 'text-[120px]' : 'text-[100px]'
-            } font-bold leading-none tracking-tighter text-gray-900 dark:text-gray-100 drop-shadow-lg`}
+            } leading-none font-bold tracking-tighter text-gray-900 drop-shadow-lg dark:text-gray-100`}
           >
             {props.price.toFixed(2)}
           </div>
-          <div className="flex items-center justify-center gap-2 mt-2">
+          <div className="mt-2 flex items-center justify-center gap-2">
             <div className="flex items-center">
               {props.change >= 0 ? (
-                <ArrowUp className="h-5 w-5 text-emerald-500 mr-1" />
+                <ArrowUp className="mr-1 h-5 w-5 text-emerald-500" />
               ) : (
-                <ArrowDown className="h-5 w-5 text-rose-500 mr-1" />
+                <ArrowDown className="mr-1 h-5 w-5 text-rose-500" />
               )}
               <span
                 className={`text-lg ${
@@ -934,7 +934,7 @@ export function StockDisplay(props: {
             </div>
             {sentimentInfo.icon}
           </div>
-          <div className="text-2xl font-medium text-center mt-2 text-gray-800 dark:text-gray-200">
+          <div className="mt-2 text-center text-2xl font-medium text-gray-800 dark:text-gray-200">
             {sentimentInfo.text}
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">

@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import { formatLargeNumber } from '~/lib/utils';
 import { Building2, Calendar, Globe } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { StockDetails } from '~/lib/finnhub';
+import { formatLargeNumber } from '~/lib/utils';
 
 export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
   const formatDate = (dateString: string) => {
@@ -14,16 +14,16 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
   };
 
   return (
-    <Card className="overflow-hidden border-0 shadow-lg rounded-3xl bg-white dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
       <CardHeader className="pb-2">
-        <CardTitle className="text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+        <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Company Info
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
               <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
@@ -37,7 +37,7 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
               <svg
                 className="h-5 w-5 text-green-600 dark:text-green-400"
                 fill="none"
@@ -63,7 +63,7 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
               <Calendar className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
@@ -77,7 +77,7 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/30">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-900/30">
               <Globe className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
@@ -88,7 +88,7 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
                 href={stockInfo.webUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                className="font-medium text-blue-600 hover:underline dark:text-blue-400"
               >
                 {stockInfo.webUrl
                   .replace(/^https?:\/\//, '')

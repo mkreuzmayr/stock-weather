@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -10,9 +10,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // https://assets.parqet.com/logos/symbol/AAPL
       {
-        hostname: "assets.parqet.com",
-        protocol: "https",
-        pathname: "/logos/symbol/**",
+        hostname: 'assets.parqet.com',
+        protocol: 'https',
+        pathname: '/logos/symbol/**',
       },
     ],
   },

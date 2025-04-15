@@ -1,5 +1,8 @@
 export type PageProps<
-  T extends Record<string, string | string[] | undefined> = Record<never, never>
+  T extends Record<string, string | string[] | undefined> = Record<
+    never,
+    never
+  >,
 > = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
   params: Promise<T>;
@@ -10,7 +13,7 @@ export type LayoutProps<
     never,
     never
   >,
-  TParallelLayouts extends string = string
+  TParallelLayouts extends string = string,
 > = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
   params: Promise<T>;

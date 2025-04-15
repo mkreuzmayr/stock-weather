@@ -1,5 +1,7 @@
-import { unstable_cacheLife as cacheLife } from 'next/cache';
-import { unstable_cacheTag as cacheTag } from 'next/cache';
+import {
+  unstable_cacheLife as cacheLife,
+  unstable_cacheTag as cacheTag,
+} from 'next/cache';
 import { env } from '~/env';
 import { RAW_STOCK_DATA } from '~/stock-data';
 

@@ -1,11 +1,11 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
-import { ArrowUp, ArrowDown, ChevronRight } from 'lucide-react';
-import { useMobile } from '~/hooks/use-mobile';
-import { RecommendationItem } from '~/data/get-similar-stocks';
+import { ArrowDown, ArrowUp, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { RecommendationItem } from '~/data/get-similar-stocks';
+import { useMobile } from '~/hooks/use-mobile';
 import { generateColorFromString } from '~/lib/utils';
 
 interface StockRecommendationsProps {
@@ -24,9 +24,9 @@ export function StockRecommendations({
     : recommendations;
 
   return (
-    <Card className="overflow-hidden border-0 shadow-lg rounded-3xl bg-white dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
       <CardHeader className="pb-2">
-        <CardTitle className="text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+        <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Similar Stocks
         </CardTitle>
       </CardHeader>
@@ -42,11 +42,11 @@ export function StockRecommendations({
                 <Link
                   href={`/${stock.ticker}`}
                   key={stock.ticker}
-                  className="flex items-center justify-between p-3 rounded-2xl transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer"
+                  className="flex cursor-pointer items-center justify-between rounded-2xl p-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
                     <Avatar
-                      className="h-10 w-10 rounded-xl flex-shrink-0"
+                      className="h-10 w-10 flex-shrink-0 rounded-xl"
                       style={{ backgroundColor: `${color}20` }}
                     >
                       <AvatarImage
@@ -60,24 +60,24 @@ export function StockRecommendations({
                       </AvatarFallback>
                     </Avatar>
                     <div className="overflow-hidden">
-                      <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                      <p className="truncate font-medium text-gray-900 dark:text-gray-100">
                         {stock.ticker}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      <p className="truncate text-xs text-gray-500 dark:text-gray-400">
                         {stock.ticker}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
+                  <div className="flex flex-shrink-0 items-center gap-3">
                     <div className="text-right">
                       <p className="font-medium text-gray-900 dark:text-gray-100">
                         ${stock.quote.currentPrice.toFixed(2)}
                       </p>
                       <div className="flex items-center justify-end">
                         {change >= 0 ? (
-                          <ArrowUp className="h-3 w-3 text-emerald-500 mr-1 flex-shrink-0" />
+                          <ArrowUp className="mr-1 h-3 w-3 flex-shrink-0 text-emerald-500" />
                         ) : (
-                          <ArrowDown className="h-3 w-3 text-rose-500 mr-1 flex-shrink-0" />
+                          <ArrowDown className="mr-1 h-3 w-3 flex-shrink-0 text-rose-500" />
                         )}
                         <span
                           className={`text-xs ${
@@ -90,13 +90,13 @@ export function StockRecommendations({
                         </span>
                       </div>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                    <ChevronRight className="h-4 w-4 flex-shrink-0 text-gray-400" />
                   </div>
                 </Link>
               );
             })
           ) : (
-            <p className="text-sm text-gray-500 dark:text-gray-400 px-3">
+            <p className="px-3 text-sm text-gray-500 dark:text-gray-400">
               No similar stocks found.
             </p>
           )}

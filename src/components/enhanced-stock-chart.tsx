@@ -1,28 +1,28 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  Activity,
+  ArrowDown,
+  ArrowUp,
+  Clock,
+  DollarSign,
+  RefreshCw,
+  TrendingUp,
+} from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Area,
   AreaChart,
+  CartesianGrid,
+  ReferenceArea,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  ReferenceArea,
-  ReferenceLine,
 } from 'recharts';
 import { useMobile } from '~/hooks/use-mobile';
-import {
-  ArrowUp,
-  ArrowDown,
-  Clock,
-  DollarSign,
-  TrendingUp,
-  Activity,
-  RefreshCw,
-} from 'lucide-react';
 import { Timeframe } from '~/lib/polygon';
 
 // Define a type for the processed chart data point
@@ -255,8 +255,8 @@ export function EnhancedStockChart({
         const data = payload[0].payload;
 
         return (
-          <div className="bg-white/95 dark:bg-gray-800/95 p-4 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 backdrop-blur-sm min-w-[250px]">
-            <div className="flex items-center justify-between mb-2">
+          <div className="min-w-[250px] rounded-xl border border-gray-200 bg-white/95 p-4 shadow-lg backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/95">
+            <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                 <span className="font-medium text-gray-900 dark:text-gray-100">
@@ -271,7 +271,7 @@ export function EnhancedStockChart({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-3">
+            <div className="mt-3 grid grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
                 <Activity className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                 <div>
@@ -293,8 +293,8 @@ export function EnhancedStockChart({
                   <div className="flex items-center">
                     {data.value > previousClosePrice ? (
                       <>
-                        <ArrowUp className="h-3 w-3 text-emerald-500 mr-1" />
-                        <span className="text-emerald-500 font-medium">
+                        <ArrowUp className="mr-1 h-3 w-3 text-emerald-500" />
+                        <span className="font-medium text-emerald-500">
                           +{(data.value - previousClosePrice).toFixed(2)} (
                           {(
                             (data.value / previousClosePrice - 1) *
@@ -305,8 +305,8 @@ export function EnhancedStockChart({
                       </>
                     ) : (
                       <>
-                        <ArrowDown className="h-3 w-3 text-rose-500 mr-1" />
-                        <span className="text-rose-500 font-medium">
+                        <ArrowDown className="mr-1 h-3 w-3 text-rose-500" />
+                        <span className="font-medium text-rose-500">
                           {(data.value - previousClosePrice).toFixed(2)} (
                           {(
                             (data.value / previousClosePrice - 1) *
@@ -336,13 +336,13 @@ export function EnhancedStockChart({
   if (chartData.length === 0) {
     return (
       <div
-        className={`relative flex flex-col items-center justify-center text-center p-4 border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/20 rounded-lg ${
+        className={`relative flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-center dark:border-gray-700 dark:bg-gray-900/20 ${
           isMobile ? 'h-[310px]' : 'h-[490px]'
         }`}
         ref={chartRef}
       >
-        <Activity className="h-10 w-10 text-gray-500 mb-3" />
-        <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">
+        <Activity className="mb-3 h-10 w-10 text-gray-500" />
+        <p className="mb-1 font-medium text-gray-700 dark:text-gray-300">
           No Data Available
         </p>
         <p className="text-xs text-gray-600 dark:text-gray-400">
@@ -361,18 +361,18 @@ export function EnhancedStockChart({
           <button
             onClick={resetZoom}
             disabled={chartData.length === fullChartData.length} // Disable if not zoomed
-            className="p-1.5 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 shadow-sm border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-full border border-gray-200 bg-white/80 p-1.5 text-gray-700 shadow-sm hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-300 dark:hover:bg-gray-700"
             title="Reset zoom"
           >
             <RefreshCw className="h-4 w-4" />
           </button>
           <button
             onClick={toggleVolume}
-            className={`p-1.5 rounded-full ${
+            className={`rounded-full p-1.5 ${
               volumeVisible
                 ? 'bg-white/80 dark:bg-gray-800/80'
                 : 'bg-gray-200/80 dark:bg-gray-700/80'
-            } hover:bg-white dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 shadow-sm border border-gray-200 dark:border-gray-700`}
+            } border border-gray-200 text-gray-700 shadow-sm hover:bg-white dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700`}
             title={volumeVisible ? 'Hide volume' : 'Show volume'}
           >
             <Activity className="h-4 w-4" />
@@ -383,7 +383,7 @@ export function EnhancedStockChart({
       {/* Instructions (only if data exists) */}
       {chartData.length > 0 && (
         <div className="absolute top-2 left-2 z-30">
-          <div className="text-xs text-gray-500 dark:text-gray-400 bg-white/80 dark:bg-gray-800/80 px-2 py-1 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="rounded-md border border-gray-200 bg-white/80 px-2 py-1 text-xs text-gray-500 shadow-sm dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-400">
             Click and drag to zoom
           </div>
         </div>
