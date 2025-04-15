@@ -103,6 +103,10 @@ export async function fetchStockHistory(
   }
 }
 
+export type AggregateBar = NonNullable<
+  Awaited<ReturnType<typeof fetchStockHistory>>
+>[number];
+
 export async function fetchLatestStockNews(ticker: string) {
   'use cache';
   cacheTag(`stock-news`, ticker);

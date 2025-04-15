@@ -10,6 +10,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useQueryState } from 'nuqs';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Area,
@@ -23,59 +24,42 @@ import {
   YAxis,
 } from 'recharts';
 import { useMobile } from '~/hooks/use-mobile';
-import { Timeframe } from '~/lib/polygon';
+import { AggregateBar, Timeframe } from '~/lib/polygon';
+import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 
-// Define a type for the processed chart data point
-interface ChartDataPoint {
+type ChartDataPoint = {
   time: string; // Formatted time string for display
   value: number; // Closing price
   volume: number; // Trading volume
   timestamp: number; // Original timestamp for calculations/sorting
   index: number; // Index for zoom logic
-}
+};
 
-// Define a type for the aggregate bar data directly
-interface AggregateBar {
-  c?: number; // Close price
-  h?: number; // High price
-  l?: number; // Low price
-  n?: number; // Number of transactions
-  o?: number; // Open price
-  t?: number; // Timestamp
-  v?: number; // Trading volume
-  vw?: number; // Volume weighted average price
-}
-
-interface EnhancedStockChartProps {
-  // ticker: string; // Keep ticker commented out for now, might be needed later
+type EnhancedStockChartProps = {
   sentiment: string;
-  timeframe: Timeframe;
   previousClosePrice: number;
-  stockHistory: AggregateBar[] | null; // Use the defined AggregateBar type
-}
+  stockHistory: AggregateBar[] | null;
+};
 
-// Define types for Recharts callbacks to fix 'any'
-interface TooltipProps {
+type TooltipProps = {
   active?: boolean;
   payload?: { payload: ChartDataPoint }[];
-  label?: string; // Keep label even if unused for type compatibility
-}
+  label?: string;
+};
 
-interface ZoomEventProps {
-  activeLabel?: string; // Used in older examples, might be different now
+type ZoomEventProps = {
+  activeLabel?: string;
   activeCoordinate?: { x: number; y: number };
   activePayload?: { payload: ChartDataPoint }[];
   chartX?: number;
   chartY?: number;
-}
+};
 
 export function EnhancedStockChart({
   sentiment,
-  timeframe,
   previousClosePrice,
   stockHistory,
 }: EnhancedStockChartProps) {
-  // State for processed and zoomed data
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [fullChartData, setFullChartData] = useState<ChartDataPoint[]>([]);
 
@@ -89,6 +73,13 @@ export function EnhancedStockChart({
   const isMobile = useMobile();
   const chartRef = useRef<HTMLDivElement>(null);
   const [volumeVisible, setVolumeVisible] = useState(true);
+
+  const [timeframe, setTimeframe] = useQueryState<Timeframe>('timeframe', {
+    defaultValue: '1D',
+    parse: (v) => v as Timeframe,
+    history: 'push',
+    shallow: false,
+  });
 
   // Process stockHistory prop when it changes
   useEffect(() => {
@@ -354,193 +345,262 @@ export function EnhancedStockChart({
 
   // --- Main Chart Rendering ---
   return (
-    <div className="relative" ref={chartRef}>
-      {/* Chart controls (only if data exists) */}
-      {chartData.length > 0 && (
-        <div className="absolute top-2 right-2 z-30 flex gap-2">
-          <button
-            onClick={resetZoom}
-            disabled={chartData.length === fullChartData.length} // Disable if not zoomed
-            className="rounded-full border border-gray-200 bg-white/80 p-1.5 text-gray-700 shadow-sm hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-300 dark:hover:bg-gray-700"
-            title="Reset zoom"
-          >
-            <RefreshCw className="h-4 w-4" />
-          </button>
-          <button
-            onClick={toggleVolume}
-            className={`rounded-full p-1.5 ${
-              volumeVisible
-                ? 'bg-white/80 dark:bg-gray-800/80'
-                : 'bg-gray-200/80 dark:bg-gray-700/80'
-            } border border-gray-200 text-gray-700 shadow-sm hover:bg-white dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700`}
-            title={volumeVisible ? 'Hide volume' : 'Show volume'}
-          >
-            <Activity className="h-4 w-4" />
-          </button>
-        </div>
-      )}
-
-      {/* Instructions (only if data exists) */}
-      {chartData.length > 0 && (
-        <div className="absolute top-2 left-2 z-30">
-          <div className="rounded-md border border-gray-200 bg-white/80 px-2 py-1 text-xs text-gray-500 shadow-sm dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-400">
-            Click and drag to zoom
+    <Wrapper timeframe={timeframe} setTimeframe={setTimeframe}>
+      <div className="relative" ref={chartRef}>
+        {/* Chart controls (only if data exists) */}
+        {chartData.length > 0 && (
+          <div className="absolute top-2 right-2 z-30 flex gap-2">
+            <button
+              onClick={resetZoom}
+              disabled={chartData.length === fullChartData.length} // Disable if not zoomed
+              className="rounded-full border border-gray-200 bg-white/80 p-1.5 text-gray-700 shadow-sm hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-300 dark:hover:bg-gray-700"
+              title="Reset zoom"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+            <button
+              onClick={toggleVolume}
+              className={`rounded-full p-1.5 ${
+                volumeVisible
+                  ? 'bg-white/80 dark:bg-gray-800/80'
+                  : 'bg-gray-200/80 dark:bg-gray-700/80'
+              } border border-gray-200 text-gray-700 shadow-sm hover:bg-white dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700`}
+              title={volumeVisible ? 'Hide volume' : 'Show volume'}
+            >
+              <Activity className="h-4 w-4" />
+            </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Chart Area */}
-      <div className={`w-full ${isMobile ? 'h-[250px]' : 'h-[400px]'}`}>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={chartData} // Use processed data state
-            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
-            onMouseDown={handleZoomStart}
-            onMouseMove={handleZoomMove}
-            onMouseUp={handleZoomEnd}
-            onMouseLeave={handleZoomEnd} // Also end zoom on mouse leave
-          >
-            <defs>
-              <linearGradient
-                id={`colorValue-${sentiment}`}
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="5%" stopColor={chartColor} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={chartColor} stopOpacity={0.1} />
-              </linearGradient>
-            </defs>
+        {/* Instructions (only if data exists) */}
+        {chartData.length > 0 && (
+          <div className="absolute top-2 left-2 z-30">
+            <div className="rounded-md border border-gray-200 bg-white/80 px-2 py-1 text-xs text-gray-500 shadow-sm dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-400">
+              Click and drag to zoom
+            </div>
+          </div>
+        )}
 
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke={
-                theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
-              }
-            />
-
-            <XAxis
-              dataKey="time" // Use formatted time
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fontSize: 12,
-                fill: theme === 'dark' ? '#94a3b8' : '#64748b',
-              }}
-              interval="preserveStartEnd"
-              minTickGap={isMobile ? 30 : 50}
-              tickFormatter={(value, index) => {
-                if (index === 0 || index === chartData.length - 1) return value;
-                if (
-                  chartData.length > 50 &&
-                  index % Math.floor(chartData.length / 5) !== 0
-                )
-                  return '';
-                return value;
-              }}
-            />
-
-            <YAxis
-              dataKey="value"
-              domain={['dataMin - dataMin * 0.01', 'dataMax + dataMax * 0.01']} // Add slight padding
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fontSize: 12,
-                fill: theme === 'dark' ? '#94a3b8' : '#64748b',
-              }}
-              width={isMobile ? 45 : 55} // Adjust width slightly
-              tickFormatter={(value) => `$${value.toFixed(value < 10 ? 2 : 0)}`} // Dynamic decimal places
-              allowDataOverflow={true}
-            />
-
-            <Tooltip content={<CustomTooltip />} isAnimationActive={false} />
-
-            {/* Previous close reference line */}
-            <ReferenceLine
-              y={previousClosePrice} // Use passed prop
-              stroke={
-                theme === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'
-              }
-              strokeDasharray="3 3"
-              label={{
-                value: 'Prev Close',
-                position: 'insideBottomRight',
-                fill: theme === 'dark' ? '#94a3b8' : '#64748b',
-                fontSize: 10,
-              }}
-            />
-
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke={chartColor}
-              strokeWidth={2}
-              fillOpacity={1}
-              fill={`url(#colorValue-${sentiment})`}
-              activeDot={{
-                r: 6,
-                strokeWidth: 2,
-                fill: chartColor,
-                stroke: theme === 'dark' ? '#1e293b' : '#ffffff',
-              }}
-              isAnimationActive={false} // Disable animation for smoother updates with external data
-            />
-
-            {/* Zoom area */}
-            {zoomState.refAreaLeft && zoomState.refAreaRight && (
-              <ReferenceArea
-                x1={
-                  fullChartData.find(
-                    (d) => d.timestamp === zoomState.refAreaLeft
-                  )?.time
-                } // Find time based on timestamp
-                x2={
-                  fullChartData.find(
-                    (d) => d.timestamp === zoomState.refAreaRight
-                  )?.time
-                }
-                strokeOpacity={0.3}
-                fill={
-                  theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
-                }
-                isFront={true} // Ensure it renders above the main area
-              />
-            )}
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Volume bars at the bottom */}
-      {volumeVisible && chartData.length > 0 && (
-        <div className={`w-full ${isMobile ? 'h-[50px]' : 'h-[80px]'} mt-2`}>
+        {/* Chart Area */}
+        <div className={`w-full ${isMobile ? 'h-[250px]' : 'h-[400px]'}`}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
-              data={chartData}
-              margin={{ top: 5, right: 10, left: 0, bottom: 0 }}
+              data={chartData} // Use processed data state
+              margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
+              onMouseDown={handleZoomStart}
+              onMouseMove={handleZoomMove}
+              onMouseUp={handleZoomEnd}
+              onMouseLeave={handleZoomEnd} // Also end zoom on mouse leave
             >
-              <XAxis dataKey="time" hide={true} />
-              <YAxis
-                dataKey="volume"
-                domain={[0, 'dataMax * 1.1']}
-                hide={true}
+              <defs>
+                <linearGradient
+                  id={`colorValue-${sentiment}`}
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="5%" stopColor={chartColor} stopOpacity={0.8} />
+                  <stop offset="95%" stopColor={chartColor} stopOpacity={0.1} />
+                </linearGradient>
+              </defs>
+
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke={
+                  theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                }
               />
-              {/* Ensure volume tooltip uses the same shared component */}
+
+              <XAxis
+                dataKey="time" // Use formatted time
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fontSize: 12,
+                  fill: theme === 'dark' ? '#94a3b8' : '#64748b',
+                }}
+                interval="preserveStartEnd"
+                minTickGap={isMobile ? 30 : 50}
+                tickFormatter={(value, index) => {
+                  if (index === 0 || index === chartData.length - 1)
+                    return value;
+                  if (
+                    chartData.length > 50 &&
+                    index % Math.floor(chartData.length / 5) !== 0
+                  )
+                    return '';
+                  return value;
+                }}
+              />
+
+              <YAxis
+                dataKey="value"
+                domain={[
+                  'dataMin - dataMin * 0.01',
+                  'dataMax + dataMax * 0.01',
+                ]} // Add slight padding
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fontSize: 12,
+                  fill: theme === 'dark' ? '#94a3b8' : '#64748b',
+                }}
+                width={isMobile ? 45 : 55} // Adjust width slightly
+                tickFormatter={(value) =>
+                  `$${value.toFixed(value < 10 ? 2 : 0)}`
+                } // Dynamic decimal places
+                allowDataOverflow={true}
+              />
+
               <Tooltip content={<CustomTooltip />} isAnimationActive={false} />
+
+              {/* Previous close reference line */}
+              <ReferenceLine
+                y={previousClosePrice} // Use passed prop
+                stroke={
+                  theme === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'
+                }
+                strokeDasharray="3 3"
+                label={{
+                  value: 'Prev Close',
+                  position: 'insideBottomRight',
+                  fill: theme === 'dark' ? '#94a3b8' : '#64748b',
+                  fontSize: 10,
+                }}
+              />
+
               <Area
                 type="monotone"
-                dataKey="volume"
-                stroke="none"
-                fillOpacity={0.5}
-                fill={`${chartColor}40`} // Use chart color with alpha
-                isAnimationActive={false}
+                dataKey="value"
+                stroke={chartColor}
+                strokeWidth={2}
+                fillOpacity={1}
+                fill={`url(#colorValue-${sentiment})`}
+                activeDot={{
+                  r: 6,
+                  strokeWidth: 2,
+                  fill: chartColor,
+                  stroke: theme === 'dark' ? '#1e293b' : '#ffffff',
+                }}
+                isAnimationActive={false} // Disable animation for smoother updates with external data
               />
+
+              {/* Zoom area */}
+              {zoomState.refAreaLeft && zoomState.refAreaRight && (
+                <ReferenceArea
+                  x1={
+                    fullChartData.find(
+                      (d) => d.timestamp === zoomState.refAreaLeft
+                    )?.time
+                  } // Find time based on timestamp
+                  x2={
+                    fullChartData.find(
+                      (d) => d.timestamp === zoomState.refAreaRight
+                    )?.time
+                  }
+                  strokeOpacity={0.3}
+                  fill={
+                    theme === 'dark'
+                      ? 'rgba(255,255,255,0.1)'
+                      : 'rgba(0,0,0,0.1)'
+                  }
+                  isFront={true} // Ensure it renders above the main area
+                />
+              )}
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      )}
+
+        {/* Volume bars at the bottom */}
+        {volumeVisible && chartData.length > 0 && (
+          <div className={`w-full ${isMobile ? 'h-[50px]' : 'h-[80px]'} mt-2`}>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={chartData}
+                margin={{ top: 5, right: 10, left: 0, bottom: 0 }}
+              >
+                <XAxis dataKey="time" hide={true} />
+                <YAxis
+                  dataKey="volume"
+                  domain={[0, 'dataMax * 1.1']}
+                  hide={true}
+                />
+                {/* Ensure volume tooltip uses the same shared component */}
+                <Tooltip
+                  content={<CustomTooltip />}
+                  isAnimationActive={false}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="volume"
+                  stroke="none"
+                  fillOpacity={0.5}
+                  fill={`${chartColor}40`} // Use chart color with alpha
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
+    </Wrapper>
+  );
+}
+
+function Wrapper(props: {
+  children: React.ReactNode;
+  timeframe: Timeframe;
+  setTimeframe: (timeframe: Timeframe) => void;
+}) {
+  return (
+    <div className="mb-6 flex rounded-3xl bg-white p-6 shadow-lg dark:bg-gray-800">
+      <Tabs
+        value={props.timeframe}
+        className="w-full"
+        onValueChange={(value) => props.setTimeframe(value as Timeframe)}
+      >
+        <div className="flex w-full flex-row items-center justify-between">
+          <h2 className="mb-4 hidden text-xl font-semibold text-gray-800 md:block dark:text-gray-200">
+            Price Chart
+          </h2>
+          <TabsList className="mb-4 grid w-full grid-cols-5 rounded-xl bg-gray-100 p-1 md:w-auto dark:bg-gray-800">
+            <TabsTrigger
+              value="1D"
+              className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+            >
+              1D
+            </TabsTrigger>
+            <TabsTrigger
+              value="1W"
+              className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+            >
+              1W
+            </TabsTrigger>
+            <TabsTrigger
+              value="1M"
+              className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+            >
+              1M
+            </TabsTrigger>
+            <TabsTrigger
+              value="3M"
+              className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+            >
+              3M
+            </TabsTrigger>
+            <TabsTrigger
+              value="1Y"
+              className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+            >
+              1Y
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        {props.children}
+      </Tabs>
     </div>
   );
 }
