@@ -1,11 +1,8 @@
 'use client';
 
 import { Cloud, CloudLightning, CloudRain, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
 
 export function StockForecast() {
-  const { theme } = useTheme();
-
   // Mock forecast data with weather-like conditions
   const forecast = [
     {
@@ -65,18 +62,6 @@ export function StockForecast() {
             </div>
           </div>
         ))}
-        <div className="flex flex-col items-center">
-          <div className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
-            MORE
-          </div>
-          <div className="mb-1 flex h-6 items-center justify-center">
-            <div className="mx-0.5 h-1 w-1 rounded-full bg-gray-400 dark:bg-gray-600"></div>
-            <div className="mx-0.5 h-1 w-1 rounded-full bg-gray-400 dark:bg-gray-600"></div>
-            <div className="mx-0.5 h-1 w-1 rounded-full bg-gray-400 dark:bg-gray-600"></div>
-          </div>
-          <div className="text-sm font-bold text-transparent">00</div>
-          <div className="text-xs text-transparent">00</div>
-        </div>
       </div>
     </div>
   );
