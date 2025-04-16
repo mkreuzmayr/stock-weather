@@ -4,14 +4,14 @@ import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
 export default function ChartLoading() {
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-background shadow-lg dark:bg-gray-800">
+    <Card className="bg-background overflow-hidden rounded-3xl border-0 shadow-lg dark:bg-gray-800">
       <CardHeader className="flex items-center justify-between">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Stock Chart
         </CardTitle>
-        <Tabs defaultValue="1D">
-          <TabsList className="grid w-full grid-cols-5">
-            {['1D', '1W', '1M', '3M', '1Y'].map((timeframe) => (
+        <Tabs defaultValue="1Y">
+          <TabsList className="grid w-full grid-cols-6">
+            {['1D', '1W', '1M', '3M', '6M', '1Y'].map((timeframe) => (
               <TabsTrigger key={timeframe} value={timeframe} disabled>
                 {timeframe}
               </TabsTrigger>
