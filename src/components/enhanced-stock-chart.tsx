@@ -555,14 +555,14 @@ function Wrapper(props: {
   setTimeframe: (timeframe: Timeframe) => void;
 }) {
   return (
-    <div className="mb-6 flex rounded-3xl bg-white p-6 shadow-lg dark:bg-gray-800">
+    <div className="flex rounded-3xl bg-white p-6 shadow-lg dark:bg-gray-800">
       <Tabs
         value={props.timeframe}
         className="w-full"
         onValueChange={(value) => props.setTimeframe(value as Timeframe)}
       >
         <div className="flex w-full flex-row items-center justify-between">
-          <h2 className="mb-4 hidden text-xl font-semibold text-gray-800 md:block dark:text-gray-200">
+          <h2 className="mb-4 hidden bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl font-semibold text-transparent md:block">
             Price Chart
           </h2>
           <TabsList className="mb-4 grid w-full grid-cols-5 rounded-xl bg-gray-100 p-1 md:w-auto dark:bg-gray-800">

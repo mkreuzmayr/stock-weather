@@ -30,7 +30,7 @@ export function StockPageLayout(props: {
           </div>
 
           {/* Right Column - Charts, Recommendations, News */}
-          <div className="col-span-12 px-4 lg:col-span-7 xl:col-span-8">
+          <div className="col-span-12 flex flex-col gap-6 px-4 lg:col-span-7 xl:col-span-8">
             {props.widgets.chart}
 
             {/* Two Column Layout for Recommendations and News */}

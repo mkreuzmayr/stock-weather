@@ -3,12 +3,15 @@ import { getSentiment } from '~/data/get-sentiment';
 import { fetchStockQuote } from '~/lib/finnhub';
 import { PageProps } from '~/lib/next-types';
 import { fetchStockHistory, Timeframe } from '~/lib/polygon';
+import { loadingSimulator } from '~/lib/loading-simulator';
 
 export default async function ChartPage(
   pageProps: PageProps<{ ticker: string }>
 ) {
   const { ticker } = await pageProps.params;
   const searchParams = await pageProps.searchParams;
+
+  await loadingSimulator();
 
   const rawTimeframe = searchParams.timeframe;
   const validTimeframes: Timeframe[] = ['1D', '1W', '1M', '3M', '6M', '1Y'];
