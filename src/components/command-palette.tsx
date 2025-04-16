@@ -2,7 +2,7 @@
 
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import {
   CommandDialog,
@@ -42,6 +42,17 @@ export function CommandPalette() {
     return () => document.removeEventListener('keydown', down);
   }, []);
 
+  const handleStockSelect = useCallback(
+    (stock: Stock) => {
+      // Here you would typically navigate to the stock page or update the current view
+      // For now, we'll just close the command palette
+      setOpen(false);
+      setSearchQuery('');
+      router.push(`/${stock.symbol}`);
+    },
+    [router]
+  );
+
   // Handle keyboard navigation within the command palette
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -68,20 +79,12 @@ export function CommandPalette() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [open, filteredStocks, selectedIndex]);
+  }, [open, filteredStocks, selectedIndex, handleStockSelect]);
 
   // Reset selected index when search query changes
   useEffect(() => {
     setSelectedIndex(0);
   }, [searchQuery]);
-
-  const handleStockSelect = (stock: Stock) => {
-    // Here you would typically navigate to the stock page or update the current view
-    // For now, we'll just close the command palette
-    setOpen(false);
-    setSearchQuery('');
-    router.push(`/${stock.symbol}`);
-  };
 
   if (!isMounted) {
     return null;
