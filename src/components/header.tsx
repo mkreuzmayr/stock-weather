@@ -1,16 +1,13 @@
+import { ChartCandlestick } from 'lucide-react';
 import { CommandPalette } from './command-palette';
 import { ThemeToggle } from './theme-toggle';
 
 export function Header() {
   return (
-    <div className="mb-6 flex items-center justify-between px-4">
-      <div className="flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white">
-          <div className="h-5 w-5 rounded-full bg-white dark:bg-black"></div>
-        </div>
-        <span className="font-mono text-sm text-gray-600 dark:text-gray-400">
-          (Not Boring) Stocks
-        </span>
+    <div className="mb-6 flex items-center justify-between pr-4">
+      <div className="flex h-12 items-center gap-3 rounded-2xl border px-4 py-2">
+        <ChartCandlestick className="size-7"></ChartCandlestick>
+        <span className="font-mono text-xl font-bold">StockWeather</span>
       </div>
       <div className="flex items-center gap-4">
         <ThemeToggle />
