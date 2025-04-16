@@ -4,14 +4,14 @@ import { LayoutProps } from '~/lib/next-types';
 export default function Layout(
   props: LayoutProps<
     { ticker: string },
-    'chart' | 'company-info' | 'forecast' | 'news' | 'recommendations'
+    'chart' | 'info' | 'forecast' | 'news' | 'recommendations'
   >
 ) {
   return (
     <StockPageLayout
       widgets={{
         chart: props.chart,
-        companyInfo: props['company-info'],
+        companyInfo: props.info,
         forecast: props.forecast,
         news: props.news,
         recommendations: props.recommendations,
