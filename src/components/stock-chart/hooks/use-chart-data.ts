@@ -16,7 +16,7 @@ export const useChartData = (stockHistory: AggregateBar[] | null) => {
   const [fullChartData, setFullChartData] = useState<ChartDataPoint[]>([]);
 
   const [timeframe, setTimeframe] = useQueryState<Timeframe>('timeframe', {
-    defaultValue: '1D',
+    defaultValue: '1Y',
     parse: (v) => v as Timeframe,
     history: 'push',
     shallow: false,

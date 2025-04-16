@@ -19,7 +19,7 @@ export default async function ChartPage(
     typeof rawTimeframe === 'string' &&
     validTimeframes.includes(rawTimeframe as Timeframe)
       ? (rawTimeframe as Timeframe)
-      : '1D';
+      : '1Y';
 
   const [stockQuote, initialStockHistory] = await Promise.all([
     fetchStockQuote(ticker),

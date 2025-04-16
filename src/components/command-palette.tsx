@@ -18,7 +18,6 @@ export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const isMobile = useMobile();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -44,47 +43,12 @@ export function CommandPalette() {
 
   const handleStockSelect = useCallback(
     (stock: Stock) => {
-      // Here you would typically navigate to the stock page or update the current view
-      // For now, we'll just close the command palette
       setOpen(false);
       setSearchQuery('');
       router.push(`/${stock.symbol}`);
     },
     [router]
   );
-
-  // Handle keyboard navigation within the command palette
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!open) return;
-
-      // Reset selected index when search query changes
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setSelectedIndex((prevIndex) =>
-          prevIndex < filteredStocks.length - 1 ? prevIndex + 1 : prevIndex
-        );
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setSelectedIndex((prevIndex) =>
-          prevIndex > 0 ? prevIndex - 1 : prevIndex
-        );
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        if (filteredStocks.length > 0) {
-          handleStockSelect(filteredStocks[selectedIndex]);
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [open, filteredStocks, selectedIndex, handleStockSelect]);
-
-  // Reset selected index when search query changes
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [searchQuery]);
 
   if (!isMounted) {
     return null;
@@ -127,6 +91,7 @@ export function CommandPalette() {
         onOpenChange={setOpen}
         commandProps={{
           // We use custom filtering in the command list
+
           shouldFilter: false,
         }}
       >
@@ -151,12 +116,10 @@ export function CommandPalette() {
         <CommandList>
           <CommandEmpty>No stocks found.</CommandEmpty>
           <CommandGroup heading="Stocks">
-            {filteredStocks.map((stock, index) => (
+            {filteredStocks.map((stock) => (
               <ListStockItem
                 key={stock.symbol}
                 stock={stock}
-                index={index}
-                selectedIndex={selectedIndex}
                 handleStockSelect={handleStockSelect}
               />
             ))}
@@ -191,8 +154,6 @@ export function CommandPalette() {
 
 function ListStockItem(props: {
   stock: Stock;
-  index: number;
-  selectedIndex: number;
   handleStockSelect: (stock: Stock) => void;
 }) {
   const logoTicker = props.stock.symbol.replace('.', '-');
@@ -200,11 +161,9 @@ function ListStockItem(props: {
 
   return (
     <CommandItem
+      tabIndex={0}
       key={props.stock.symbol}
       onSelect={() => props.handleStockSelect(props.stock)}
-      className={`flex items-center justify-between px-2 py-2 ${
-        props.index === props.selectedIndex ? 'bg-accent' : ''
-      }`}
     >
       <div className="flex items-center gap-3">
         <Avatar className="h-8 w-8 rounded-md">
@@ -218,24 +177,6 @@ function ListStockItem(props: {
           </div>
         </div>
       </div>
-      {/* <div className="flex items-center gap-2">
-      <div className="text-right">
-        <div className="font-medium">${stock.price.toFixed(2)}</div>
-        <div className="flex items-center justify-end">
-          {stock.change >= 0 ? (
-            <ArrowUp className="h-3 w-3 text-emerald-500 mr-1" />
-          ) : (
-            <ArrowDown className="h-3 w-3 text-rose-500 mr-1" />
-          )}
-          <span className={`text-xs ${stock.change >= 0 ? "text-emerald-500" : "text-rose-500"}`}>
-            {stock.change >= 0 ? "+" : ""}
-            {stock.change} ({stock.change >= 0 ? "+" : ""}
-            {stock.changePercent}%)
-          </span>
-        </div>
-      </div>
-      {stock.change > 5 && <Sparkles className="h-4 w-4 text-amber-400" />}
-    </div> */}
     </CommandItem>
   );
 }
