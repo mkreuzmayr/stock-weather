@@ -17,6 +17,7 @@ export type StockDetails = {
   ticker: string;
   webUrl: string;
   logo: string;
+  sector: string;
   industry: string;
 };
 
@@ -50,7 +51,8 @@ export async function fetchStockDetails(ticker: string): Promise<StockDetails> {
     ticker,
     webUrl: data.weburl,
     logo: data.logo,
-    industry: data.finnhubIndustry,
+    industry: offlineData.industry,
+    sector: offlineData.sector,
   };
 }
 

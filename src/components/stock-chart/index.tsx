@@ -82,8 +82,8 @@ export function EnhancedStockChart(props: {
             value={timeframe}
             onValueChange={(value) => setTimeframe(value as Timeframe)}
           >
-            <TabsList className="grid w-full grid-cols-5 rounded-xl bg-gray-100 p-1 md:w-auto dark:bg-gray-800">
-              {['1D', '1W', '1M', '3M', '1Y'].map((timeframe) => (
+            <TabsList className="grid w-full grid-cols-6 rounded-xl bg-gray-100 p-1 md:w-auto dark:bg-gray-800">
+              {['1D', '1W', '1M', '3M', '6M', '1Y'].map((timeframe) => (
                 <TabsTrigger
                   key={timeframe}
                   value={timeframe}
