@@ -1,9 +1,9 @@
-import { EnhancedStockChart } from '~/components/enhanced-stock-chart';
+import { EnhancedStockChart } from '~/components/stock-chart';
 import { getSentiment } from '~/data/get-sentiment';
 import { fetchStockQuote } from '~/lib/finnhub';
+import { loadingSimulator } from '~/lib/loading-simulator';
 import { PageProps } from '~/lib/next-types';
 import { fetchStockHistory, Timeframe } from '~/lib/polygon';
-import { loadingSimulator } from '~/lib/loading-simulator';
 
 export default async function ChartPage(
   pageProps: PageProps<{ ticker: string }>
