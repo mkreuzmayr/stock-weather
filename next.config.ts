@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  redirects: async () => [
+    {
+      source: '/',
+      destination: '/AAPL',
+      permanent: true,
+    },
+  ],
 };
 
 export default nextConfig;
