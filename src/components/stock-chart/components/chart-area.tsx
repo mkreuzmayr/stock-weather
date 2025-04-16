@@ -33,11 +33,10 @@ export function ChartArea(props: {
   const chartColor = getChartColor(props.sentiment, theme);
 
   return (
-    <div className="h-[250px] w-full md:h-[400px]">
+    <div className="h-[320px] w-full md:h-[480px]">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={props.data}
-          margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
           onMouseDown={props.onZoomStart}
           onMouseMove={props.onZoomMove}
           onMouseUp={props.onZoomEnd}
@@ -53,6 +52,18 @@ export function ChartArea(props: {
             >
               <stop offset="5%" stopColor={chartColor} stopOpacity={0.8} />
               <stop offset="95%" stopColor={chartColor} stopOpacity={0.1} />
+            </linearGradient>
+            <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop
+                offset="5%"
+                stopColor={theme === 'dark' ? '#64748b' : '#a3a3a3'}
+                stopOpacity={0.25}
+              />
+              <stop
+                offset="95%"
+                stopColor={theme === 'dark' ? '#64748b' : '#a3a3a3'}
+                stopOpacity={0.01}
+              />
             </linearGradient>
           </defs>
 
@@ -87,7 +98,10 @@ export function ChartArea(props: {
 
           <YAxis
             dataKey="value"
-            domain={['dataMin - dataMin * 0.01', 'dataMax + dataMax * 0.01']}
+            domain={[
+              'dataMin - (dataMax - dataMin) * 0.25',
+              'dataMax + (dataMax - dataMin) * 0.10',
+            ]}
             axisLine={false}
             tickLine={false}
             tick={{
@@ -97,6 +111,18 @@ export function ChartArea(props: {
             width={55}
             tickFormatter={(value) => `$${value.toFixed(value < 10 ? 2 : 0)}`}
             allowDataOverflow={true}
+            yAxisId="left"
+          />
+
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            dataKey="volume"
+            domain={[0, 'dataMax * 1.5']}
+            axisLine={false}
+            tickLine={false}
+            tick={false}
+            width={30}
           />
 
           <Tooltip
@@ -118,10 +144,10 @@ export function ChartArea(props: {
               fill: theme === 'dark' ? '#94a3b8' : '#64748b',
               fontSize: 10,
             }}
+            yAxisId="left"
           />
 
           <Area
-            className="main-chart-area"
             type="monotone"
             dataKey="value"
             stroke={chartColor}
@@ -135,6 +161,17 @@ export function ChartArea(props: {
               stroke: theme === 'dark' ? '#1e293b' : '#ffffff',
             }}
             isAnimationActive={false}
+            yAxisId="left"
+          />
+
+          <Area
+            type="monotone"
+            dataKey="volume"
+            stroke="none"
+            fillOpacity={0.7}
+            fill="url(#volumeGradient)"
+            isAnimationActive={false}
+            yAxisId="right"
           />
 
           {props.zoomState.refAreaLeft && props.zoomState.refAreaRight && (

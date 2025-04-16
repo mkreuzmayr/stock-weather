@@ -6,10 +6,8 @@ import { AggregateBar, Timeframe } from '~/lib/polygon';
 import { Button } from '../ui/button';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import { ChartArea } from './components/chart-area';
-import { VolumeChart } from './components/volume-chart';
 import { useChartData } from './hooks/use-chart-data';
 import { useChartZoom } from './hooks/use-chart-zoom';
-import { getChartColor } from './utils';
 
 export function EnhancedStockChart(props: {
   sentiment: string;
@@ -110,14 +108,6 @@ export function EnhancedStockChart(props: {
           onZoomMove={handleZoomMove}
           onZoomEnd={handleZoomEndWithData}
         />
-
-        {hasData && (
-          <VolumeChart
-            data={chartData}
-            previousClosePrice={props.previousClosePrice}
-            chartColor={getChartColor(props.sentiment, undefined)}
-          />
-        )}
       </div>
     </div>
   );
