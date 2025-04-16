@@ -47,7 +47,7 @@ export async function fetchStockDetails(ticker: string): Promise<StockDetails> {
     name: offlineData.name,
     phone: data.phone,
     shareOutstanding: data.shareOutstanding,
-    ticker: data.ticker,
+    ticker,
     webUrl: data.weburl,
     logo: data.logo,
     industry: data.finnhubIndustry,
