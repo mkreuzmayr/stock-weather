@@ -1,11 +1,11 @@
-import { Skeleton } from '~/components/ui/skeleton';
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { ChevronRight } from 'lucide-react';
 import { Avatar, AvatarFallback } from '~/components/ui/avatar';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { Skeleton } from '~/components/ui/skeleton';
 
 export default function RecommendationsLoading() {
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
+    <Card className="bg-background overflow-hidden rounded-3xl border-0 shadow-lg">
       <CardHeader className="pb-2">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Similar Stocks
@@ -37,7 +37,7 @@ export default function RecommendationsLoading() {
                     <Skeleton className="h-3 w-16" />
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                <ChevronRight className="text-muted-foreground h-4 w-4 flex-shrink-0" />
               </div>
             </div>
           ))}

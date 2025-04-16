@@ -870,7 +870,7 @@ export function StockDisplay(props: {
   const logoUrl = `https://assets.parqet.com/logos/symbol/${logoTicker}`;
 
   return (
-    <div className="relative">
+    <div className="bg-card relative">
       <div className="p-3">
         <div className="bg-background relative z-10 flex flex-row items-center justify-between rounded-xl p-1.5 shadow-2xl">
           {/* Company Logo */}
@@ -886,10 +886,10 @@ export function StockDisplay(props: {
             </div>
           </div>
           <div className="text-centerh-16 flex flex-col items-end justify-center gap-0 px-3">
-            <h1 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+            <h1 className="text-foreground text-lg font-medium">
               {props.stockInfo.name}
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-muted-foreground text-sm">
               {props.stockInfo.ticker}
             </p>
           </div>
@@ -898,7 +898,7 @@ export function StockDisplay(props: {
 
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#ffffff] dark:to-gray-900"></div>
+      <div className="to-background absolute inset-0 bg-gradient-to-b from-transparent"></div>
 
       {/* Canvas for 3D stock visualization */}
       <div
@@ -911,7 +911,7 @@ export function StockDisplay(props: {
           <div
             className={`${
               isMobile ? 'text-[120px]' : 'text-[100px]'
-            } leading-none font-bold tracking-tighter text-gray-900 drop-shadow-lg dark:text-gray-100`}
+            } text-foreground leading-none font-bold tracking-tighter drop-shadow-lg`}
           >
             {props.price.toFixed(2)}
           </div>
@@ -934,10 +934,10 @@ export function StockDisplay(props: {
             </div>
             {sentimentInfo.icon}
           </div>
-          <div className="mt-2 text-center text-2xl font-medium text-gray-800 dark:text-gray-200">
+          <div className="text-foreground mt-2 text-center text-2xl font-medium">
             {sentimentInfo.text}
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="text-muted-foreground text-sm">
             {sentimentInfo.description}
           </div>
         </div>

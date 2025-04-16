@@ -96,7 +96,7 @@ export function CommandPalette() {
         <div className="relative mx-auto w-full max-w-sm">
           <button
             onClick={() => setOpen(true)}
-            className="bg-background ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-12 w-full items-center justify-between rounded-2xl px-4 py-3 text-sm shadow-sm focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            className="bg-card ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-12 w-full items-center justify-between rounded-2xl px-4 py-3 text-sm shadow-sm focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           >
             <div className="text-muted-foreground flex items-center gap-2">
               <Search className="h-4 w-4" />

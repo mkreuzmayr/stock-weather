@@ -24,7 +24,7 @@ export function StockRecommendations({
     : recommendations;
 
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 shadow-lg">
       <CardHeader className="pb-2">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Similar Stocks
@@ -42,7 +42,7 @@ export function StockRecommendations({
                 <Link
                   href={`/${stock.ticker}`}
                   key={stock.ticker}
-                  className="flex cursor-pointer items-center justify-between rounded-2xl p-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                  className="flex cursor-pointer items-center justify-between rounded-2xl p-3 transition-colors hover:bg-muted"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
                     <Avatar
@@ -60,17 +60,17 @@ export function StockRecommendations({
                       </AvatarFallback>
                     </Avatar>
                     <div className="overflow-hidden">
-                      <p className="truncate font-medium text-gray-900 dark:text-gray-100">
+                      <p className="truncate font-medium text-foreground">
                         {stock.ticker}
                       </p>
-                      <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                      <p className="truncate text-xs text-muted-foreground">
                         {stock.ticker}
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-shrink-0 items-center gap-3">
                     <div className="text-right">
-                      <p className="font-medium text-gray-900 dark:text-gray-100">
+                      <p className="font-medium text-foreground">
                         ${stock.quote.currentPrice.toFixed(2)}
                       </p>
                       <div className="flex items-center justify-end">
@@ -96,7 +96,7 @@ export function StockRecommendations({
               );
             })
           ) : (
-            <p className="px-3 text-sm text-gray-500 dark:text-gray-400">
+            <p className="px-3 text-sm text-muted-foreground">
               No similar stocks found.
             </p>
           )}

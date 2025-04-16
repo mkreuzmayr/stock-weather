@@ -56,12 +56,12 @@ export function ChartArea(props: {
             <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="5%"
-                stopColor={theme === 'dark' ? '#64748b' : '#1e293b'}
+                stopColor="var(--muted-foreground)"
                 stopOpacity={0.25}
               />
               <stop
                 offset="95%"
-                stopColor={theme === 'dark' ? '#64748b' : '#1e293b'}
+                stopColor="var(--muted-foreground)"
                 stopOpacity={0.1}
               />
             </linearGradient>
@@ -70,9 +70,7 @@ export function ChartArea(props: {
           <CartesianGrid
             strokeDasharray="3 3"
             vertical={false}
-            stroke={
-              theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
-            }
+            stroke="var(--border)"
           />
 
           <XAxis
@@ -81,7 +79,7 @@ export function ChartArea(props: {
             tickLine={false}
             tick={{
               fontSize: 12,
-              fill: theme === 'dark' ? '#94a3b8' : '#64748b',
+              fill: "var(--muted-foreground)",
             }}
             interval="preserveStartEnd"
             minTickGap={50}
@@ -101,14 +99,13 @@ export function ChartArea(props: {
             domain={([dataMin, dataMax]) => {
               const range = dataMax - dataMin;
               const padding = range === 0 ? dataMin * 0.1 || 1 : range * 0.07;
-
               return [dataMin - padding, dataMax + padding];
             }}
             axisLine={false}
             tickLine={false}
             tick={{
               fontSize: 12,
-              fill: theme === 'dark' ? '#94a3b8' : '#64748b',
+              fill: "var(--muted-foreground)",
             }}
             width={55}
             tickFormatter={(value) => `$${value.toFixed(value < 10 ? 2 : 0)}`}
@@ -123,7 +120,6 @@ export function ChartArea(props: {
             domain={([dataMin, dataMax]) => {
               const range = dataMax - dataMin;
               const padding = range === 0 ? dataMin * 0.1 || 1 : range * 5;
-
               return [0, dataMax + padding];
             }}
             axisLine={false}
@@ -141,14 +137,12 @@ export function ChartArea(props: {
 
           <ReferenceLine
             y={props.previousClosePrice}
-            stroke={
-              theme === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'
-            }
+            stroke="var(--border)"
             strokeDasharray="3 3"
             label={{
               value: 'Prev Close',
               position: 'insideBottomRight',
-              fill: theme === 'dark' ? '#94a3b8' : '#64748b',
+              fill: "var(--muted-foreground)",
               fontSize: 10,
             }}
             yAxisId="left"
@@ -165,7 +159,7 @@ export function ChartArea(props: {
               r: 6,
               strokeWidth: 2,
               fill: chartColor,
-              stroke: theme === 'dark' ? '#1e293b' : '#ffffff',
+              stroke: "var(--background)"
             }}
             isAnimationActive={false}
             yAxisId="left"
@@ -194,9 +188,7 @@ export function ChartArea(props: {
                 )?.time
               }
               strokeOpacity={0.3}
-              fill={
-                theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
-              }
+              fill="var(--border)"
               isFront={true}
             />
           )}

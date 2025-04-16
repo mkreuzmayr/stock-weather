@@ -22,13 +22,13 @@ export function ThemeToggle() {
     <Button
       variant="outline"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="size-10 rounded-xl p-3 transition-colors duration-200"
+      className="bg-card size-12 rounded-2xl border-0 transition-colors duration-200"
       aria-label="Toggle theme"
     >
       {theme === 'dark' ? (
-        <Sun className="h-5 w-5 text-yellow-400" />
+        <Sun className="h-6 w-6 text-yellow-400" />
       ) : (
-        <Moon className="h-5 w-5 text-gray-700" />
+        <Moon className="h-6 w-6 text-gray-700" />
       )}
     </Button>
   );

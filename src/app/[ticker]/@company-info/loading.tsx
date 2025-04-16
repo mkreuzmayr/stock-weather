@@ -4,7 +4,7 @@ import { Building2, Calendar, Globe } from 'lucide-react';
 
 export default function CompanyInfoLoading() {
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 bg-background shadow-lg dark:bg-gray-800">
       <CardHeader className="pb-2">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Company Info
@@ -17,7 +17,7 @@ export default function CompanyInfoLoading() {
               <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Industry</p>
+              <p className="text-sm text-muted-foreground">Industry</p>
               <Skeleton className="mt-1 h-5 w-32" />
             </div>
           </div>
@@ -39,7 +39,7 @@ export default function CompanyInfoLoading() {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Market Cap
               </p>
               <Skeleton className="mt-1 h-5 w-32" />
@@ -51,7 +51,7 @@ export default function CompanyInfoLoading() {
               <Calendar className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">IPO Date</p>
+              <p className="text-sm text-muted-foreground">IPO Date</p>
               <Skeleton className="mt-1 h-5 w-32" />
             </div>
           </div>
@@ -61,7 +61,7 @@ export default function CompanyInfoLoading() {
               <Globe className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Website</p>
+              <p className="text-sm text-muted-foreground">Website</p>
               <Skeleton className="mt-1 h-5 w-32" />
             </div>
           </div>

@@ -43,12 +43,10 @@ export function EnhancedStockChart(props: {
 
   if (chartData.length === 0) {
     return (
-      <div className="relative flex h-[310px] flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-center md:h-[490px] dark:border-gray-700 dark:bg-gray-900/20">
-        <Activity className="mb-3 h-10 w-10 text-gray-500" />
-        <p className="mb-1 font-medium text-gray-700 dark:text-gray-300">
-          No Data Available
-        </p>
-        <p className="text-xs text-gray-600 dark:text-gray-400">
+      <div className="border-border bg-muted relative flex h-[310px] flex-col items-center justify-center rounded-lg border border-dashed p-4 text-center md:h-[490px]">
+        <Activity className="text-muted-foreground mb-3 h-10 w-10" />
+        <p className="text-foreground mb-1 font-medium">No Data Available</p>
+        <p className="text-muted-foreground text-xs">
           There is no historical data for the selected timeframe.
         </p>
       </div>
@@ -56,7 +54,7 @@ export function EnhancedStockChart(props: {
   }
 
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 shadow-lg">
       <CardHeader className="flex w-full flex-row items-center justify-between">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Price Chart
@@ -77,12 +75,12 @@ export function EnhancedStockChart(props: {
             value={timeframe}
             onValueChange={(value) => setTimeframe(value as Timeframe)}
           >
-            <TabsList className="grid w-full grid-cols-6 rounded-xl bg-gray-100 p-1 md:w-auto dark:bg-gray-800">
+            <TabsList className="bg-muted grid w-full grid-cols-6 rounded-xl p-1 md:w-auto">
               {['1D', '1W', '1M', '3M', '6M', '1Y'].map((timeframe) => (
                 <TabsTrigger
                   key={timeframe}
                   value={timeframe}
-                  className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+                  className="data-[state=active]:bg-background rounded-lg data-[state=active]:shadow-sm"
                 >
                   {timeframe}
                 </TabsTrigger>

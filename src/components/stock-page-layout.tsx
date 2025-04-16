@@ -15,7 +15,7 @@ export function StockPageLayout(props: {
   };
 }) {
   return (
-    <div className="min-h-screen bg-gray-50 transition-colors duration-300 dark:bg-gray-950">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       <div className={`container mx-auto max-w-md py-6 md:max-w-7xl`}>
         <Header />
 
@@ -23,7 +23,7 @@ export function StockPageLayout(props: {
           {/* Left Column - Main Stock Display */}
           <div className="col-span-12 lg:col-span-5 xl:col-span-4">
             <div className="sticky top-6">
-              <div className="mb-6 bg-white md:overflow-hidden md:rounded-3xl md:shadow-lg dark:bg-gray-800">
+              <div className="mb-6 bg-background md:overflow-hidden md:rounded-3xl md:shadow-lg">
                 {props.widgets.weather}
               </div>
             </div>

@@ -18,59 +18,50 @@ export function NewsSection({ news }: NewsSectionProps) {
   const displayArticles = isMobile ? news.slice(0, 3) : news;
 
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 shadow-lg">
       <CardHeader className="pb-2">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Latest News
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <h3 className="px-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-            Recent Articles
-          </h3>
-          {displayArticles.length > 0 ? (
-            displayArticles.map((article) => (
-              <a
-                key={article.id}
-                href={article.articleUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-start gap-3 rounded-2xl p-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50"
-              >
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-gray-100">
-                    {article.title}
-                  </p>
-                  <div className="mt-1 flex items-center gap-2">
-                    {article.publisher?.name && (
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {article.publisher.name}
-                      </span>
-                    )}
-                    {article.publisher?.name && (
-                      <span className="text-xs text-gray-400 dark:text-gray-500">
-                        •
-                      </span>
-                    )}
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {formatDistanceToNow(new Date(article.publishedUtc), {
-                        addSuffix: true,
-                      })}
+        {displayArticles.length > 0 ? (
+          displayArticles.map((article) => (
+            <a
+              key={article.id}
+              href={article.articleUrl || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:bg-muted flex items-start gap-3 rounded-2xl p-3 transition-colors"
+            >
+              <div className="flex-1">
+                <p className="text-foreground font-medium">{article.title}</p>
+                <div className="mt-1 flex items-center gap-2">
+                  {article.publisher?.name && (
+                    <span className="text-muted-foreground text-xs">
+                      {article.publisher.name}
                     </span>
-                  </div>
+                  )}
+                  {article.publisher?.name && (
+                    <span className="text-muted-foreground text-xs">•</span>
+                  )}
+                  <span className="text-muted-foreground text-xs">
+                    {formatDistanceToNow(new Date(article.publishedUtc), {
+                      addSuffix: true,
+                    })}
+                  </span>
                 </div>
-                {article.articleUrl && (
-                  <ExternalLink className="mt-1 h-4 w-4 flex-shrink-0 text-gray-400" />
-                )}
-              </a>
-            ))
-          ) : (
-            <p className="px-3 text-sm text-gray-500 dark:text-gray-400">
-              No recent news found for this ticker.
-            </p>
-          )}
-        </div>
+              </div>
+              {article.articleUrl && (
+                <ExternalLink className="text-muted-foreground mt-1 h-4 w-4 flex-shrink-0" />
+              )}
+            </a>
+          ))
+        ) : (
+          <p className="text-muted-foreground px-3 text-sm">
+            No recent news found for this ticker.
+          </p>
+        )}
       </CardContent>
     </Card>
   );

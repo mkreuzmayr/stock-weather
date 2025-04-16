@@ -1,6 +1,7 @@
 'use client';
 
 import { Cloud, CloudLightning, CloudRain, Sun } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
 
 export function StockForecast() {
   // Mock forecast data with weather-like conditions
@@ -45,21 +46,23 @@ export function StockForecast() {
   };
 
   return (
-    <div className="flex items-center justify-between rounded-3xl bg-white px-8 py-6 shadow-lg dark:bg-gray-800">
-      {forecast.map((day, index) => (
-        <div key={index} className="flex flex-col items-center">
-          <div className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
-            {day.day}
+    <Card className="rounded-3xl border-0 shadow-lg">
+      <CardContent className="flex items-center justify-between">
+        {forecast.map((day, index) => (
+          <div key={index} className="flex flex-col items-center">
+            <div className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+              {day.day}
+            </div>
+            <div className="mb-1">{getConditionIcon(day.condition)}</div>
+            <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
+              {day.high.toFixed(1)}
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              {day.low.toFixed(1)}
+            </div>
           </div>
-          <div className="mb-1">{getConditionIcon(day.condition)}</div>
-          <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
-            {day.high.toFixed(1)}
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            {day.low.toFixed(1)}
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }

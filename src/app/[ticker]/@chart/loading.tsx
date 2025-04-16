@@ -4,7 +4,7 @@ import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
 export default function ChartLoading() {
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 bg-background shadow-lg dark:bg-gray-800">
       <CardHeader className="flex items-center justify-between">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Stock Chart

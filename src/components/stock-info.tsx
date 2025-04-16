@@ -14,7 +14,7 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
   };
 
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 shadow-lg">
       <CardHeader className="pb-2">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Company Info
@@ -27,8 +27,8 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
               <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Sector</p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">
+              <p className="text-sm text-muted-foreground">Sector</p>
+              <p className="font-medium text-foreground">
                 {stockInfo.sector}
               </p>
             </div>
@@ -39,10 +39,10 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
               <Factory className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Industry
               </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">
+              <p className="font-medium text-foreground">
                 {stockInfo.industry}
               </p>
             </div>
@@ -65,10 +65,10 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Market Cap
               </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">
+              <p className="font-medium text-foreground">
                 ${formatLargeNumber(stockInfo.marketCapitalization * 1000000)}
               </p>
             </div>
@@ -79,10 +79,10 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
               <Calendar className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 IPO Date
               </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100">
+              <p className="font-medium text-foreground">
                 {formatDate(stockInfo.ipo)}
               </p>
             </div>
@@ -93,14 +93,14 @@ export function StockInfo({ stockInfo }: { stockInfo: StockDetails }) {
               <Globe className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Website
               </p>
               <a
                 href={stockInfo.webUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+                className="font-medium text-primary hover:underline"
               >
                 {stockInfo.webUrl
                   .replace(/^https?:\/\//, '')

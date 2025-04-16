@@ -21,7 +21,7 @@ export default function Loading() {
         <Skeleton className="h-full w-full" />
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#ffffff] dark:to-gray-900"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background"></div>
 
       {/* Canvas for 3D stock visualization */}
       <div className="-mx-7 mb-4 h-[400px]" />

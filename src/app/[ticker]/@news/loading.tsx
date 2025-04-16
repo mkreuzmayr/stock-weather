@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 
 export default function NewsLoading() {
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 bg-white shadow-lg dark:bg-gray-800">
+    <Card className="overflow-hidden rounded-3xl border-0 bg-background shadow-lg dark:bg-gray-800">
       <CardHeader className="pb-2">
         <CardTitle className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl text-transparent">
           Latest News
@@ -11,7 +11,7 @@ export default function NewsLoading() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          <h3 className="px-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+          <h3 className="px-1 text-sm font-medium text-muted-foreground">
             Recent Articles
           </h3>
           {Array.from({ length: 5 }).map((_, i) => (
