@@ -23,7 +23,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useMobile } from '~/hooks/use-mobile';
 import { AggregateBar, Timeframe } from '~/lib/polygon';
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 
@@ -70,7 +69,6 @@ export function EnhancedStockChart({
   }>({ refAreaLeft: null, refAreaRight: null, zooming: false });
 
   const { theme } = useTheme();
-  const isMobile = useMobile();
   const chartRef = useRef<HTMLDivElement>(null);
   const [volumeVisible, setVolumeVisible] = useState(true);
 
@@ -323,13 +321,10 @@ export function EnhancedStockChart({
   const chartColor = getChartColor();
 
   // --- Render No Data State ---
-  // Check chartData derived from stockHistory prop
   if (chartData.length === 0) {
     return (
       <div
-        className={`relative flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-center dark:border-gray-700 dark:bg-gray-900/20 ${
-          isMobile ? 'h-[310px]' : 'h-[490px]'
-        }`}
+        className="relative flex h-[310px] flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-center md:h-[490px] dark:border-gray-700 dark:bg-gray-900/20"
         ref={chartRef}
       >
         <Activity className="mb-3 h-10 w-10 text-gray-500" />
@@ -352,7 +347,7 @@ export function EnhancedStockChart({
           <div className="absolute top-2 right-2 z-30 flex gap-2">
             <button
               onClick={resetZoom}
-              disabled={chartData.length === fullChartData.length} // Disable if not zoomed
+              disabled={chartData.length === fullChartData.length}
               className="rounded-full border border-gray-200 bg-white/80 p-1.5 text-gray-700 shadow-sm hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-300 dark:hover:bg-gray-700"
               title="Reset zoom"
             >
@@ -373,15 +368,15 @@ export function EnhancedStockChart({
         )}
 
         {/* Chart Area */}
-        <div className={`w-full ${isMobile ? 'h-[250px]' : 'h-[400px]'}`}>
+        <div className="h-[250px] w-full md:h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
-              data={chartData} // Use processed data state
+              data={chartData}
               margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
               onMouseDown={handleZoomStart}
               onMouseMove={handleZoomMove}
               onMouseUp={handleZoomEnd}
-              onMouseLeave={handleZoomEnd} // Also end zoom on mouse leave
+              onMouseLeave={handleZoomEnd}
             >
               <defs>
                 <linearGradient
@@ -405,7 +400,7 @@ export function EnhancedStockChart({
               />
 
               <XAxis
-                dataKey="time" // Use formatted time
+                dataKey="time"
                 axisLine={false}
                 tickLine={false}
                 tick={{
@@ -413,7 +408,7 @@ export function EnhancedStockChart({
                   fill: theme === 'dark' ? '#94a3b8' : '#64748b',
                 }}
                 interval="preserveStartEnd"
-                minTickGap={isMobile ? 30 : 50}
+                minTickGap={50}
                 tickFormatter={(value, index) => {
                   if (index === 0 || index === chartData.length - 1)
                     return value;
@@ -431,25 +426,24 @@ export function EnhancedStockChart({
                 domain={[
                   'dataMin - dataMin * 0.01',
                   'dataMax + dataMax * 0.01',
-                ]} // Add slight padding
+                ]}
                 axisLine={false}
                 tickLine={false}
                 tick={{
                   fontSize: 12,
                   fill: theme === 'dark' ? '#94a3b8' : '#64748b',
                 }}
-                width={isMobile ? 45 : 55} // Adjust width slightly
+                width={55}
                 tickFormatter={(value) =>
                   `$${value.toFixed(value < 10 ? 2 : 0)}`
-                } // Dynamic decimal places
+                }
                 allowDataOverflow={true}
               />
 
               <Tooltip content={<CustomTooltip />} isAnimationActive={false} />
 
-              {/* Previous close reference line */}
               <ReferenceLine
-                y={previousClosePrice} // Use passed prop
+                y={previousClosePrice}
                 stroke={
                   theme === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'
                 }
@@ -476,17 +470,16 @@ export function EnhancedStockChart({
                   fill: chartColor,
                   stroke: theme === 'dark' ? '#1e293b' : '#ffffff',
                 }}
-                isAnimationActive={false} // Disable animation for smoother updates with external data
+                isAnimationActive={false}
               />
 
-              {/* Zoom area */}
               {zoomState.refAreaLeft && zoomState.refAreaRight && (
                 <ReferenceArea
                   x1={
                     fullChartData.find(
                       (d) => d.timestamp === zoomState.refAreaLeft
                     )?.time
-                  } // Find time based on timestamp
+                  }
                   x2={
                     fullChartData.find(
                       (d) => d.timestamp === zoomState.refAreaRight
@@ -498,7 +491,7 @@ export function EnhancedStockChart({
                       ? 'rgba(255,255,255,0.1)'
                       : 'rgba(0,0,0,0.1)'
                   }
-                  isFront={true} // Ensure it renders above the main area
+                  isFront={true}
                 />
               )}
             </AreaChart>
@@ -507,7 +500,7 @@ export function EnhancedStockChart({
 
         {/* Volume bars at the bottom */}
         {volumeVisible && chartData.length > 0 && (
-          <div className={`w-full ${isMobile ? 'h-[50px]' : 'h-[80px]'} mt-2`}>
+          <div className="mt-2 h-[50px] w-full md:h-[80px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={chartData}
@@ -519,7 +512,6 @@ export function EnhancedStockChart({
                   domain={[0, 'dataMax * 1.1']}
                   hide={true}
                 />
-                {/* Ensure volume tooltip uses the same shared component */}
                 <Tooltip
                   content={<CustomTooltip />}
                   isAnimationActive={false}
@@ -529,7 +521,7 @@ export function EnhancedStockChart({
                   dataKey="volume"
                   stroke="none"
                   fillOpacity={0.5}
-                  fill={`${chartColor}40`} // Use chart color with alpha
+                  fill={`${chartColor}40`}
                   isAnimationActive={false}
                 />
               </AreaChart>
