@@ -56,13 +56,13 @@ export function ChartArea(props: {
             <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="5%"
-                stopColor={theme === 'dark' ? '#64748b' : '#a3a3a3'}
+                stopColor={theme === 'dark' ? '#64748b' : '#1e293b'}
                 stopOpacity={0.25}
               />
               <stop
                 offset="95%"
-                stopColor={theme === 'dark' ? '#64748b' : '#a3a3a3'}
-                stopOpacity={0.01}
+                stopColor={theme === 'dark' ? '#64748b' : '#1e293b'}
+                stopOpacity={0.1}
               />
             </linearGradient>
           </defs>
@@ -98,10 +98,12 @@ export function ChartArea(props: {
 
           <YAxis
             dataKey="value"
-            domain={[
-              'dataMin - (dataMax - dataMin) * 0.25',
-              'dataMax + (dataMax - dataMin) * 0.10',
-            ]}
+            domain={([dataMin, dataMax]) => {
+              const range = dataMax - dataMin;
+              const padding = range === 0 ? dataMin * 0.1 || 1 : range * 0.07;
+
+              return [dataMin - padding, dataMax + padding];
+            }}
             axisLine={false}
             tickLine={false}
             tick={{
@@ -118,7 +120,12 @@ export function ChartArea(props: {
             yAxisId="right"
             orientation="right"
             dataKey="volume"
-            domain={[0, 'dataMax * 1.5']}
+            domain={([dataMin, dataMax]) => {
+              const range = dataMax - dataMin;
+              const padding = range === 0 ? dataMin * 0.1 || 1 : range * 5;
+
+              return [0, dataMax + padding];
+            }}
             axisLine={false}
             tickLine={false}
             tick={false}
