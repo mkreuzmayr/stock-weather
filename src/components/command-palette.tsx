@@ -29,8 +29,6 @@ export function CommandPalette() {
   // Filter stocks based on search query
   const filteredStocks = searchStocks(searchQuery);
 
-  console.log(searchQuery, filteredStocks);
-
   // Handle keyboard shortcut
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -78,7 +76,6 @@ export function CommandPalette() {
   }, [searchQuery]);
 
   const handleStockSelect = (stock: Stock) => {
-    console.log(`Selected stock: ${stock.symbol}`);
     // Here you would typically navigate to the stock page or update the current view
     // For now, we'll just close the command palette
     setOpen(false);
