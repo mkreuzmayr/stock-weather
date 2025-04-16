@@ -346,7 +346,7 @@ export function EnhancedStockChart({
   // --- Main Chart Rendering ---
   return (
     <Wrapper timeframe={timeframe} setTimeframe={setTimeframe}>
-      <div className="relative" ref={chartRef}>
+      <div className="relative flex flex-col justify-end" ref={chartRef}>
         {/* Chart controls (only if data exists) */}
         {chartData.length > 0 && (
           <div className="absolute top-2 right-2 z-30 flex gap-2">
@@ -369,15 +369,6 @@ export function EnhancedStockChart({
             >
               <Activity className="h-4 w-4" />
             </button>
-          </div>
-        )}
-
-        {/* Instructions (only if data exists) */}
-        {chartData.length > 0 && (
-          <div className="absolute top-2 left-2 z-30">
-            <div className="rounded-md border border-gray-200 bg-white/80 px-2 py-1 text-xs text-gray-500 shadow-sm dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-400">
-              Click and drag to zoom
-            </div>
           </div>
         )}
 
@@ -472,6 +463,7 @@ export function EnhancedStockChart({
               />
 
               <Area
+                className="main-chart-area"
                 type="monotone"
                 dataKey="value"
                 stroke={chartColor}
