@@ -8,8 +8,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Not Boring Stocks',
-  description: 'A modern, 3D stock application',
+  title: 'StockWeather',
+  description: 'A modern, weather-based stock application',
 };
 
 export default function RootLayout({
